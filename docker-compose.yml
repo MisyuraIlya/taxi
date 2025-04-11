@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7
+    container_name: redis-geo
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - taxinet
+    ports:
+    - "6379:6379"
+  geo-service:
+    container_name: geo-service
+    build: 
+      context: ./services/geo
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./services/geo:/app 
+    environment:
+      APP_PORT: ":8081"
+      GEO_REDIS_HOST: redis
+      GEO_REDIS_PORT: 6379
+    depends_on:
+      - redis
+    networks:
+      - taxinet
+    ports:
+      - "8081:8081"
+    command: ["air"]
+
+
+volumes:
+  redis_data:
+
+networks:
+  taxinet:
