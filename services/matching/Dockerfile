@@ -8,5 +8,5 @@ RUN CGO_ENABLED=0 go build -o service cmd/main.go
 FROM alpine:3.16
 WORKDIR /app
 COPY --from=builder /app/service /app/service
-EXPOSE 8082
+EXPOSE 9090
 CMD ["/app/service"]

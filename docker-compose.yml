@@ -10,7 +10,8 @@ services:
     networks:
       - taxinet
     ports:
-    - "6379:6379"
+      - "6379:6379"
+      
   geo-service:
     container_name: geo-service
     build: 
@@ -30,6 +31,23 @@ services:
       - "8081:8081"
     command: ["air"]
 
+  matching-service:
+    container_name: matching-service
+    build:
+      context: ./services/matching
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./services/matching:/app
+    environment:
+      APP_PORT: ":9090"
+      GEO_SERVICE_URL: "geo-service:8081"
+    depends_on:
+      - geo-service
+    networks:
+      - taxinet
+    ports:
+      - "9090:9090"
+    command: ["air"]
 
 volumes:
   redis_data:

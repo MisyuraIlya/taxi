@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package matching;
+
+option go_package = "matching-service/proto;matching";
+
+// MatchingService defines the gRPC API for matching client locations.
+service MatchingService {
+  // MatchClients receives a request with location details and returns matching client locations.
+  rpc MatchClients(MatchClientsRequest) returns (MatchClientsResponse);
+}
+
+// MatchClientsRequest is used to request matching client locations.
+message MatchClientsRequest {
+  double latitude = 1;
+  double longitude = 2;
+  double radius = 3; // The search radius in meters.
+  uint32 limit = 4;  // The maximum number of clients to return.
+}
+
+// ClientLocation represents a client's location with userId, latitude, longitude, and a geohash.
+message ClientLocation {
+  string userId = 1;       // Mapped from geo service's DriverId to this service's userId.
+  double latitude = 2;
+  double longitude = 3;
+  uint64 geohash = 4;
+}
+
+// MatchClientsResponse contains a list of client locations.
+message MatchClientsResponse {
+  repeated ClientLocation clients = 1;
+}

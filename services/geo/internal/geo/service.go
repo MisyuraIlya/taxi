@@ -1,9 +1,16 @@
 package geo
 
+import (
+	"context"
+	"geo-service/proto"
+)
+
 type Service interface {
-	UpdateLocation(driverId string, latitude string, longitude string) error
-	GetLocation(driverId string) (string, string, error)
+	UpdateLocation(ctx context.Context, driverId string, latitude string, longitude string) error
+	GetLocation(ctx context.Context, driverId string) (string, string, error)
+	FindDrivers(ctx context.Context, lat, lon float64, radius float64, limit uint32) ([]*proto.Driver, error)
 }
+
 type service struct {
 	repository Repository
 }
@@ -14,18 +21,14 @@ func NewService(repository Repository) Service {
 	}
 }
 
-func (s *service) UpdateLocation(driverId string, latitude string, longitude string) error {
-	err := s.repository.UpdateLocation(driverId, latitude, longitude)
-	if err != nil {
-		return err
-	}
-	return nil
+func (s *service) UpdateLocation(ctx context.Context, driverId string, latitude string, longitude string) error {
+	return s.repository.UpdateLocation(ctx, driverId, latitude, longitude)
 }
 
-func (s *service) GetLocation(driverId string) (string, string, error) {
-	latitude, longitude, err := s.repository.GetLocation(driverId)
-	if err != nil {
-		return "", "", err
-	}
-	return latitude, longitude, nil
+func (s *service) GetLocation(ctx context.Context, driverId string) (string, string, error) {
+	return s.repository.GetLocation(ctx, driverId)
+}
+
+func (s *service) FindDrivers(ctx context.Context, lat, lon float64, radius float64, limit uint32) ([]*proto.Driver, error) {
+	return s.repository.FindDrivers(ctx, lat, lon, radius, limit)
 }

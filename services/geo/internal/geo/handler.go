@@ -1,44 +1,47 @@
 package geo
 
-import "net/http"
+import (
+	"context"
+	"geo-service/proto"
+)
 
-type Handler struct {
+type GRPCServer struct {
+	proto.UnimplementedGeoServiceServer
 	service Service
 }
 
-func NewHandler(router *http.ServeMux, service Service) {
-	handler := &Handler{
+func NewGRPCServer(service Service) *GRPCServer {
+	return &GRPCServer{
 		service: service,
 	}
-
-	router.HandleFunc("PUT /updateLocation", handler.UpdateLocation)
-	router.HandleFunc("GET /GetLocation", handler.GetLocation)
 }
 
-func (h *Handler) UpdateLocation(w http.ResponseWriter, r *http.Request) {
-	driverId := r.URL.Query().Get("driverId")
-	latitude := r.URL.Query().Get("latitude")
-	longitude := r.URL.Query().Get("longitude")
-
-	err := h.service.UpdateLocation(driverId, latitude, longitude)
+func (s *GRPCServer) UpdateLocation(ctx context.Context, req *proto.UpdateLocationRequest) (*proto.UpdateLocationResponse, error) {
+	err := s.service.UpdateLocation(ctx, req.DriverId, req.Latitude, req.Longitude)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return nil, err
 	}
-
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Location updated successfully"))
+	return &proto.UpdateLocationResponse{Message: "Location updated successfully"}, nil
 }
 
-func (h *Handler) GetLocation(w http.ResponseWriter, r *http.Request) {
-	driverId := r.URL.Query().Get("driverId")
-
-	latitude, longitude, err := h.service.GetLocation(driverId)
+func (s *GRPCServer) GetLocation(ctx context.Context, req *proto.GetLocationRequest) (*proto.GetLocationResponse, error) {
+	lat, lon, err := s.service.GetLocation(ctx, req.DriverId)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return nil, err
+	}
+	return &proto.GetLocationResponse{
+		Latitude:  lat,
+		Longitude: lon,
+	}, nil
+}
+
+func (s *GRPCServer) FindDrivers(ctx context.Context, req *proto.FindDriversRequest) (*proto.FindDriversResponse, error) {
+	drivers, err := s.service.FindDrivers(ctx, req.Latitude, req.Longitude, req.Radius, req.Limit)
+	if err != nil {
+		return nil, err
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Latitude: " + latitude + ", Longitude: " + longitude))
+	return &proto.FindDriversResponse{
+		Drivers: drivers,
+	}, nil
 }
