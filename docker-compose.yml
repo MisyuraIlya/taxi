@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  redis:
+  redis-geo:
     image: redis:7
     container_name: redis-geo
     command: ["redis-server", "--appendonly", "yes"]
@@ -11,6 +11,17 @@ services:
       - taxinet
     ports:
       - "6379:6379"
+
+  redis-matching:
+    image: redis:7
+    container_name: redis-matching
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - taxinet
+    ports:
+      - "6380:6379"
       
   geo-service:
     container_name: geo-service
@@ -21,10 +32,10 @@ services:
       - ./services/geo:/app 
     environment:
       APP_PORT: ":8081"
-      GEO_REDIS_HOST: redis
+      GEO_REDIS_HOST: redis-geo
       GEO_REDIS_PORT: 6379
     depends_on:
-      - redis
+      - redis-geo
     networks:
       - taxinet
     ports:
@@ -41,8 +52,11 @@ services:
     environment:
       APP_PORT: ":9090"
       GEO_SERVICE_URL: "geo-service:8081"
+      MATCHING_REDIS_HOST: redis-matching
+      MATCHIG_REDIS_PORT: 6379
     depends_on:
       - geo-service
+      - redis-matching
     networks:
       - taxinet
     ports:

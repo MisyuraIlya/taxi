@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v3.21.12
-// source: proto/geo.proto
+// source: geo.proto
 
 package proto
 
@@ -27,13 +27,14 @@ type UpdateLocationRequest struct {
 	DriverId      string                 `protobuf:"bytes,1,opt,name=driverId,proto3" json:"driverId,omitempty"`
 	Latitude      string                 `protobuf:"bytes,2,opt,name=latitude,proto3" json:"latitude,omitempty"`
 	Longitude     string                 `protobuf:"bytes,3,opt,name=longitude,proto3" json:"longitude,omitempty"`
+	Status        string                 `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *UpdateLocationRequest) Reset() {
 	*x = UpdateLocationRequest{}
-	mi := &file_proto_geo_proto_msgTypes[0]
+	mi := &file_geo_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -45,7 +46,7 @@ func (x *UpdateLocationRequest) String() string {
 func (*UpdateLocationRequest) ProtoMessage() {}
 
 func (x *UpdateLocationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_geo_proto_msgTypes[0]
+	mi := &file_geo_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -58,7 +59,7 @@ func (x *UpdateLocationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateLocationRequest.ProtoReflect.Descriptor instead.
 func (*UpdateLocationRequest) Descriptor() ([]byte, []int) {
-	return file_proto_geo_proto_rawDescGZIP(), []int{0}
+	return file_geo_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *UpdateLocationRequest) GetDriverId() string {
@@ -82,6 +83,13 @@ func (x *UpdateLocationRequest) GetLongitude() string {
 	return ""
 }
 
+func (x *UpdateLocationRequest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
 type UpdateLocationResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
@@ -91,7 +99,7 @@ type UpdateLocationResponse struct {
 
 func (x *UpdateLocationResponse) Reset() {
 	*x = UpdateLocationResponse{}
-	mi := &file_proto_geo_proto_msgTypes[1]
+	mi := &file_geo_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -103,7 +111,7 @@ func (x *UpdateLocationResponse) String() string {
 func (*UpdateLocationResponse) ProtoMessage() {}
 
 func (x *UpdateLocationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_geo_proto_msgTypes[1]
+	mi := &file_geo_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -116,7 +124,7 @@ func (x *UpdateLocationResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateLocationResponse.ProtoReflect.Descriptor instead.
 func (*UpdateLocationResponse) Descriptor() ([]byte, []int) {
-	return file_proto_geo_proto_rawDescGZIP(), []int{1}
+	return file_geo_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *UpdateLocationResponse) GetMessage() string {
@@ -135,7 +143,7 @@ type GetLocationRequest struct {
 
 func (x *GetLocationRequest) Reset() {
 	*x = GetLocationRequest{}
-	mi := &file_proto_geo_proto_msgTypes[2]
+	mi := &file_geo_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -147,7 +155,7 @@ func (x *GetLocationRequest) String() string {
 func (*GetLocationRequest) ProtoMessage() {}
 
 func (x *GetLocationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_geo_proto_msgTypes[2]
+	mi := &file_geo_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -160,7 +168,7 @@ func (x *GetLocationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLocationRequest.ProtoReflect.Descriptor instead.
 func (*GetLocationRequest) Descriptor() ([]byte, []int) {
-	return file_proto_geo_proto_rawDescGZIP(), []int{2}
+	return file_geo_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GetLocationRequest) GetDriverId() string {
@@ -180,7 +188,7 @@ type GetLocationResponse struct {
 
 func (x *GetLocationResponse) Reset() {
 	*x = GetLocationResponse{}
-	mi := &file_proto_geo_proto_msgTypes[3]
+	mi := &file_geo_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -192,7 +200,7 @@ func (x *GetLocationResponse) String() string {
 func (*GetLocationResponse) ProtoMessage() {}
 
 func (x *GetLocationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_geo_proto_msgTypes[3]
+	mi := &file_geo_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -205,7 +213,7 @@ func (x *GetLocationResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLocationResponse.ProtoReflect.Descriptor instead.
 func (*GetLocationResponse) Descriptor() ([]byte, []int) {
-	return file_proto_geo_proto_rawDescGZIP(), []int{3}
+	return file_geo_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetLocationResponse) GetLatitude() string {
@@ -229,13 +237,14 @@ type FindDriversRequest struct {
 	Longitude     float64                `protobuf:"fixed64,2,opt,name=longitude,proto3" json:"longitude,omitempty"`
 	Radius        float64                `protobuf:"fixed64,3,opt,name=radius,proto3" json:"radius,omitempty"`
 	Limit         uint32                 `protobuf:"varint,4,opt,name=limit,proto3" json:"limit,omitempty"`
+	Status        string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *FindDriversRequest) Reset() {
 	*x = FindDriversRequest{}
-	mi := &file_proto_geo_proto_msgTypes[4]
+	mi := &file_geo_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -247,7 +256,7 @@ func (x *FindDriversRequest) String() string {
 func (*FindDriversRequest) ProtoMessage() {}
 
 func (x *FindDriversRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_geo_proto_msgTypes[4]
+	mi := &file_geo_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -260,7 +269,7 @@ func (x *FindDriversRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FindDriversRequest.ProtoReflect.Descriptor instead.
 func (*FindDriversRequest) Descriptor() ([]byte, []int) {
-	return file_proto_geo_proto_rawDescGZIP(), []int{4}
+	return file_geo_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *FindDriversRequest) GetLatitude() float64 {
@@ -291,6 +300,13 @@ func (x *FindDriversRequest) GetLimit() uint32 {
 	return 0
 }
 
+func (x *FindDriversRequest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
 type Driver struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	DriverId      string                 `protobuf:"bytes,1,opt,name=driverId,proto3" json:"driverId,omitempty"`
@@ -303,7 +319,7 @@ type Driver struct {
 
 func (x *Driver) Reset() {
 	*x = Driver{}
-	mi := &file_proto_geo_proto_msgTypes[5]
+	mi := &file_geo_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -315,7 +331,7 @@ func (x *Driver) String() string {
 func (*Driver) ProtoMessage() {}
 
 func (x *Driver) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_geo_proto_msgTypes[5]
+	mi := &file_geo_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -328,7 +344,7 @@ func (x *Driver) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Driver.ProtoReflect.Descriptor instead.
 func (*Driver) Descriptor() ([]byte, []int) {
-	return file_proto_geo_proto_rawDescGZIP(), []int{5}
+	return file_geo_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Driver) GetDriverId() string {
@@ -368,7 +384,7 @@ type FindDriversResponse struct {
 
 func (x *FindDriversResponse) Reset() {
 	*x = FindDriversResponse{}
-	mi := &file_proto_geo_proto_msgTypes[6]
+	mi := &file_geo_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -380,7 +396,7 @@ func (x *FindDriversResponse) String() string {
 func (*FindDriversResponse) ProtoMessage() {}
 
 func (x *FindDriversResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_geo_proto_msgTypes[6]
+	mi := &file_geo_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -393,7 +409,7 @@ func (x *FindDriversResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FindDriversResponse.ProtoReflect.Descriptor instead.
 func (*FindDriversResponse) Descriptor() ([]byte, []int) {
-	return file_proto_geo_proto_rawDescGZIP(), []int{6}
+	return file_geo_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *FindDriversResponse) GetDrivers() []*Driver {
@@ -403,27 +419,29 @@ func (x *FindDriversResponse) GetDrivers() []*Driver {
 	return nil
 }
 
-var File_proto_geo_proto protoreflect.FileDescriptor
+var File_geo_proto protoreflect.FileDescriptor
 
-const file_proto_geo_proto_rawDesc = "" +
+const file_geo_proto_rawDesc = "" +
 	"\n" +
-	"\x0fproto/geo.proto\x12\x03geo\"m\n" +
+	"\tgeo.proto\x12\x03geo\"\x85\x01\n" +
 	"\x15UpdateLocationRequest\x12\x1a\n" +
 	"\bdriverId\x18\x01 \x01(\tR\bdriverId\x12\x1a\n" +
 	"\blatitude\x18\x02 \x01(\tR\blatitude\x12\x1c\n" +
-	"\tlongitude\x18\x03 \x01(\tR\tlongitude\"2\n" +
+	"\tlongitude\x18\x03 \x01(\tR\tlongitude\x12\x16\n" +
+	"\x06status\x18\x04 \x01(\tR\x06status\"2\n" +
 	"\x16UpdateLocationResponse\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\"0\n" +
 	"\x12GetLocationRequest\x12\x1a\n" +
 	"\bdriverId\x18\x01 \x01(\tR\bdriverId\"O\n" +
 	"\x13GetLocationResponse\x12\x1a\n" +
 	"\blatitude\x18\x01 \x01(\tR\blatitude\x12\x1c\n" +
-	"\tlongitude\x18\x02 \x01(\tR\tlongitude\"|\n" +
+	"\tlongitude\x18\x02 \x01(\tR\tlongitude\"\x94\x01\n" +
 	"\x12FindDriversRequest\x12\x1a\n" +
 	"\blatitude\x18\x01 \x01(\x01R\blatitude\x12\x1c\n" +
 	"\tlongitude\x18\x02 \x01(\x01R\tlongitude\x12\x16\n" +
 	"\x06radius\x18\x03 \x01(\x01R\x06radius\x12\x14\n" +
-	"\x05limit\x18\x04 \x01(\rR\x05limit\"x\n" +
+	"\x05limit\x18\x04 \x01(\rR\x05limit\x12\x16\n" +
+	"\x06status\x18\x05 \x01(\tR\x06status\"x\n" +
 	"\x06Driver\x12\x1a\n" +
 	"\bdriverId\x18\x01 \x01(\tR\bdriverId\x12\x1a\n" +
 	"\blatitude\x18\x02 \x01(\x01R\blatitude\x12\x1c\n" +
@@ -438,19 +456,19 @@ const file_proto_geo_proto_rawDesc = "" +
 	"\vFindDrivers\x12\x17.geo.FindDriversRequest\x1a\x18.geo.FindDriversResponseB1Z/github.com/yourusername/geo-service/proto;protob\x06proto3"
 
 var (
-	file_proto_geo_proto_rawDescOnce sync.Once
-	file_proto_geo_proto_rawDescData []byte
+	file_geo_proto_rawDescOnce sync.Once
+	file_geo_proto_rawDescData []byte
 )
 
-func file_proto_geo_proto_rawDescGZIP() []byte {
-	file_proto_geo_proto_rawDescOnce.Do(func() {
-		file_proto_geo_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_geo_proto_rawDesc), len(file_proto_geo_proto_rawDesc)))
+func file_geo_proto_rawDescGZIP() []byte {
+	file_geo_proto_rawDescOnce.Do(func() {
+		file_geo_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_geo_proto_rawDesc), len(file_geo_proto_rawDesc)))
 	})
-	return file_proto_geo_proto_rawDescData
+	return file_geo_proto_rawDescData
 }
 
-var file_proto_geo_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
-var file_proto_geo_proto_goTypes = []any{
+var file_geo_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_geo_proto_goTypes = []any{
 	(*UpdateLocationRequest)(nil),  // 0: geo.UpdateLocationRequest
 	(*UpdateLocationResponse)(nil), // 1: geo.UpdateLocationResponse
 	(*GetLocationRequest)(nil),     // 2: geo.GetLocationRequest
@@ -459,7 +477,7 @@ var file_proto_geo_proto_goTypes = []any{
 	(*Driver)(nil),                 // 5: geo.Driver
 	(*FindDriversResponse)(nil),    // 6: geo.FindDriversResponse
 }
-var file_proto_geo_proto_depIdxs = []int32{
+var file_geo_proto_depIdxs = []int32{
 	5, // 0: geo.FindDriversResponse.drivers:type_name -> geo.Driver
 	0, // 1: geo.GeoService.UpdateLocation:input_type -> geo.UpdateLocationRequest
 	2, // 2: geo.GeoService.GetLocation:input_type -> geo.GetLocationRequest
@@ -474,26 +492,26 @@ var file_proto_geo_proto_depIdxs = []int32{
 	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_proto_geo_proto_init() }
-func file_proto_geo_proto_init() {
-	if File_proto_geo_proto != nil {
+func init() { file_geo_proto_init() }
+func file_geo_proto_init() {
+	if File_geo_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_geo_proto_rawDesc), len(file_proto_geo_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_geo_proto_rawDesc), len(file_geo_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_proto_geo_proto_goTypes,
-		DependencyIndexes: file_proto_geo_proto_depIdxs,
-		MessageInfos:      file_proto_geo_proto_msgTypes,
+		GoTypes:           file_geo_proto_goTypes,
+		DependencyIndexes: file_geo_proto_depIdxs,
+		MessageInfos:      file_geo_proto_msgTypes,
 	}.Build()
-	File_proto_geo_proto = out.File
-	file_proto_geo_proto_goTypes = nil
-	file_proto_geo_proto_depIdxs = nil
+	File_geo_proto = out.File
+	file_geo_proto_goTypes = nil
+	file_geo_proto_depIdxs = nil
 }

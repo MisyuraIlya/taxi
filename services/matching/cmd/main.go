@@ -10,6 +10,7 @@ import (
 
 	"matching-service/configs"
 	"matching-service/internal/matching"
+	"matching-service/pkg/redis"
 
 	pb "matching-service/proto"
 	geopb "matching-service/protoGeo"
@@ -17,7 +18,7 @@ import (
 
 func main() {
 	cfg := configs.LoadConfig()
-
+	redisClient := redis.NewRedisPool(cfg)
 	geoConn, err := grpc.Dial(cfg.GeoServiceURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	fmt.Printf("Connecting to geo service at %s\n", cfg.GeoServiceURL)
 	if err != nil {

@@ -41,7 +41,6 @@ func (r *repository) UpdateLocation(ctx context.Context, driverId string, latitu
 
 	intHash := int64(geohash.EncodeInt(lat, lon))
 
-	// Update Geo-location
 	if _, err = r.redis.GeoAdd(ctx, locationKey, &redis.GeoLocation{
 		Name:      driverId,
 		Latitude:  lat,
@@ -51,7 +50,6 @@ func (r *repository) UpdateLocation(ctx context.Context, driverId string, latitu
 		return fmt.Errorf("failed to update location: %v", err)
 	}
 
-	// Update Driver Status
 	if status != "active" && status != "busy" {
 		return fmt.Errorf("invalid status: %s", status)
 	}

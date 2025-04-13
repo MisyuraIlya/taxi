@@ -2,8 +2,8 @@ package matching
 
 import (
 	"context"
-	"fmt"
 
+	"matching-service/pkg/redis"
 	geopb "matching-service/protoGeo"
 )
 
@@ -14,10 +14,11 @@ type Repository interface {
 
 type repository struct {
 	geoClient geopb.GeoServiceClient
+	redis     *redis.Client
 }
 
-func NewRepository(geoClient geopb.GeoServiceClient) Repository {
-	return &repository{geoClient: geoClient}
+func NewRepository(geoClient geopb.GeoServiceClient, redis *redis.Client) Repository {
+	return &repository{geoClient: geoClient, redis: redis}
 }
 
 func (r *repository) FindClients(ctx context.Context, latitude, longitude, radius float64, limit uint32) ([]*ClientLocation, error) {
@@ -26,10 +27,9 @@ func (r *repository) FindClients(ctx context.Context, latitude, longitude, radiu
 		Longitude: longitude,
 		Radius:    radius,
 		Limit:     limit,
+		Status:    "active",
 	}
-	fmt.Println("req", req)
 	resp, err := r.geoClient.FindDrivers(ctx, req)
-	fmt.Println("resp", resp)
 	if err != nil {
 		return nil, err
 	}
