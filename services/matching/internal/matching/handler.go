@@ -2,6 +2,8 @@ package matching
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	pb "matching-service/proto"
 )
@@ -23,17 +25,36 @@ func (h *Handler) MatchClients(ctx context.Context, req *pb.MatchClientsRequest)
 		return nil, err
 	}
 
-	var pbClients []*pb.ClientLocation
+	var acceptedClient *ClientLocation
+	notifyURL := "http://notification-service:8082/notify/driver"
+	notificationMessage := "New ride request: Accept or Decline?"
+
 	for _, c := range clients {
-		pbClients = append(pbClients, &pb.ClientLocation{
-			UserId:    c.UserID,
-			Latitude:  c.Latitude,
-			Longitude: c.Longitude,
-			Geohash:   c.Geohash,
-		})
+		response, err := SendNotification(c.UserID, notificationMessage, notifyURL)
+		if err != nil {
+			fmt.Printf("error sending notification to driver %s: %v\n", c.UserID, err)
+			continue
+		}
+
+		fmt.Printf("Driver %s responded: %s\n", c.UserID, response)
+		if strings.ToLower(response) == "accept" {
+			acceptedClient = c
+			break
+		}
+	}
+
+	if acceptedClient == nil {
+		return nil, fmt.Errorf("no driver accepted the ride")
+	}
+
+	pbClient := &pb.ClientLocation{
+		UserId:    acceptedClient.UserID,
+		Latitude:  acceptedClient.Latitude,
+		Longitude: acceptedClient.Longitude,
+		Geohash:   acceptedClient.Geohash,
 	}
 
 	return &pb.MatchClientsResponse{
-		Clients: pbClients,
+		Clients: []*pb.ClientLocation{pbClient},
 	}, nil
 }

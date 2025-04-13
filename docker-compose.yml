@@ -49,6 +49,21 @@ services:
       - "9090:9090"
     command: ["air"]
 
+  notification-service:
+    container_name: notification-service
+    build:
+      context: ./services/notification
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./services/notification:/app
+    environment:
+      APP_PORT: ":8082"
+    networks:
+      - taxinet
+    ports:
+      - "8082:8082"
+    command: ["air"]
+
 volumes:
   redis_data:
 

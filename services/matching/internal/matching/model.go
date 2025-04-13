@@ -6,3 +6,8 @@ type ClientLocation struct {
 	Longitude float64 `json:"longitude"`
 	Geohash   uint64  `json:"geohash"`
 }
+
+type NotificationPayload struct {
+	DriverID string `json:"driver_id"`
+	Message  string `json:"message"`
+}
