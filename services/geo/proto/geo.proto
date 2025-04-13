@@ -19,6 +19,7 @@ message UpdateLocationRequest {
   string driverId = 1;
   string latitude = 2;
   string longitude = 3;
+  string status = 4;
 }
 
 message UpdateLocationResponse {
@@ -40,6 +41,7 @@ message FindDriversRequest {
   double longitude = 2;
   double radius = 3; 
   uint32 limit = 4;
+  string status = 5;
 }
 
 message Driver {

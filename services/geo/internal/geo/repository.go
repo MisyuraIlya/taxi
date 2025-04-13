@@ -11,9 +11,9 @@ import (
 )
 
 type Repository interface {
-	UpdateLocation(ctx context.Context, driverId string, latitude string, longitude string) error
+	UpdateLocation(ctx context.Context, driverId string, latitude string, longitude string, status string) error
 	GetLocation(ctx context.Context, driverId string) (string, string, error)
-	FindDrivers(ctx context.Context, lat, lon float64, radius float64, limit uint32) ([]*proto.Driver, error)
+	FindDrivers(ctx context.Context, lat, lon float64, radius float64, limit uint32, status string) ([]*proto.Driver, error)
 }
 
 type repository struct {
@@ -26,7 +26,10 @@ func NewRepository(redis *redis.Client) Repository {
 	}
 }
 
-func (r *repository) UpdateLocation(ctx context.Context, driverId string, latitude string, longitude string) error {
+func (r *repository) UpdateLocation(ctx context.Context, driverId string, latitude string, longitude string, status string) error {
+	const locationKey = "drivers:locations"
+	const statusKey = "drivers:status"
+
 	lat, err := strconv.ParseFloat(latitude, 64)
 	if err != nil {
 		return fmt.Errorf("invalid latitude: %v", err)
@@ -37,19 +40,27 @@ func (r *repository) UpdateLocation(ctx context.Context, driverId string, latitu
 	}
 
 	intHash := int64(geohash.EncodeInt(lat, lon))
-	const key = "drivers:locations"
 
-	_, err = r.redis.GeoAdd(ctx, key, &redis.GeoLocation{
+	// Update Geo-location
+	if _, err = r.redis.GeoAdd(ctx, locationKey, &redis.GeoLocation{
 		Name:      driverId,
 		Latitude:  lat,
 		Longitude: lon,
 		GeoHash:   intHash,
-	}).Result()
-
-	if err != nil {
+	}).Result(); err != nil {
 		return fmt.Errorf("failed to update location: %v", err)
 	}
-	fmt.Printf("Updated location for driver %s: lat %f, lon %f\n", driverId, lat, lon)
+
+	// Update Driver Status
+	if status != "active" && status != "busy" {
+		return fmt.Errorf("invalid status: %s", status)
+	}
+
+	if err = r.redis.HSet(ctx, statusKey, driverId, status).Err(); err != nil {
+		return fmt.Errorf("failed to update status: %v", err)
+	}
+
+	fmt.Printf("Updated location/status for driver %s: lat=%f, lon=%f, status=%s\n", driverId, lat, lon, status)
 	return nil
 }
 
@@ -68,8 +79,9 @@ func (r *repository) GetLocation(ctx context.Context, driverId string) (string, 
 	return latitude, longitude, nil
 }
 
-func (r *repository) FindDrivers(ctx context.Context, lat, lon float64, radius float64, limit uint32) ([]*proto.Driver, error) {
+func (r *repository) FindDrivers(ctx context.Context, lat, lon float64, radius float64, limit uint32, status string) ([]*proto.Driver, error) {
 	const key = "drivers:locations"
+	const statusKey = "drivers:status"
 
 	query := &redis.GeoRadiusQuery{
 		Radius:      radius,
@@ -86,14 +98,27 @@ func (r *repository) FindDrivers(ctx context.Context, lat, lon float64, radius f
 	}
 
 	var drivers []*proto.Driver
-	fmt.Printf("Found %d drivers within %.2f meters of (%f, %f):\n", len(results), radius, lat, lon)
 	for _, loc := range results {
-		drivers = append(drivers, &proto.Driver{
-			DriverId:  loc.Name,
-			Latitude:  loc.Latitude,
-			Longitude: loc.Longitude,
-			Geohash:   uint64(loc.GeoHash),
-		})
+		driverStatus, err := r.redis.HGet(ctx, statusKey, loc.Name).Result()
+		if err != nil {
+			continue
+		}
+
+		if driverStatus == status {
+			drivers = append(drivers, &proto.Driver{
+				DriverId:  loc.Name,
+				Latitude:  loc.Latitude,
+				Longitude: loc.Longitude,
+				Geohash:   uint64(loc.GeoHash),
+			})
+
+			if len(drivers) >= int(limit) {
+				break
+			}
+		}
 	}
+
+	fmt.Printf("Found %d drivers with status '%s' within %.2f meters of (%f, %f)\n", len(drivers), status, radius, lat, lon)
+
 	return drivers, nil
 }

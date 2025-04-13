@@ -17,7 +17,7 @@ func NewGRPCServer(service Service) *GRPCServer {
 }
 
 func (s *GRPCServer) UpdateLocation(ctx context.Context, req *proto.UpdateLocationRequest) (*proto.UpdateLocationResponse, error) {
-	err := s.service.UpdateLocation(ctx, req.DriverId, req.Latitude, req.Longitude)
+	err := s.service.UpdateLocation(ctx, req.DriverId, req.Latitude, req.Longitude, req.Status)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (s *GRPCServer) GetLocation(ctx context.Context, req *proto.GetLocationRequ
 }
 
 func (s *GRPCServer) FindDrivers(ctx context.Context, req *proto.FindDriversRequest) (*proto.FindDriversResponse, error) {
-	drivers, err := s.service.FindDrivers(ctx, req.Latitude, req.Longitude, req.Radius, req.Limit)
+	drivers, err := s.service.FindDrivers(ctx, req.Latitude, req.Longitude, req.Radius, req.Limit, req.Status)
 	if err != nil {
 		return nil, err
 	}
