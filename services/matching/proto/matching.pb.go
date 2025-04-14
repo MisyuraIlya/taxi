@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.6
 // 	protoc        v3.21.12
-// source: proto/matching.proto
+// source: matching.proto
 
 package matching
 
@@ -34,7 +34,7 @@ type MatchClientsRequest struct {
 
 func (x *MatchClientsRequest) Reset() {
 	*x = MatchClientsRequest{}
-	mi := &file_proto_matching_proto_msgTypes[0]
+	mi := &file_matching_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -46,7 +46,7 @@ func (x *MatchClientsRequest) String() string {
 func (*MatchClientsRequest) ProtoMessage() {}
 
 func (x *MatchClientsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_matching_proto_msgTypes[0]
+	mi := &file_matching_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -59,7 +59,7 @@ func (x *MatchClientsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MatchClientsRequest.ProtoReflect.Descriptor instead.
 func (*MatchClientsRequest) Descriptor() ([]byte, []int) {
-	return file_proto_matching_proto_rawDescGZIP(), []int{0}
+	return file_matching_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *MatchClientsRequest) GetLatitude() float64 {
@@ -103,7 +103,7 @@ type ClientLocation struct {
 
 func (x *ClientLocation) Reset() {
 	*x = ClientLocation{}
-	mi := &file_proto_matching_proto_msgTypes[1]
+	mi := &file_matching_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -115,7 +115,7 @@ func (x *ClientLocation) String() string {
 func (*ClientLocation) ProtoMessage() {}
 
 func (x *ClientLocation) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_matching_proto_msgTypes[1]
+	mi := &file_matching_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -128,7 +128,7 @@ func (x *ClientLocation) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ClientLocation.ProtoReflect.Descriptor instead.
 func (*ClientLocation) Descriptor() ([]byte, []int) {
-	return file_proto_matching_proto_rawDescGZIP(), []int{1}
+	return file_matching_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *ClientLocation) GetUserId() string {
@@ -169,7 +169,7 @@ type MatchClientsResponse struct {
 
 func (x *MatchClientsResponse) Reset() {
 	*x = MatchClientsResponse{}
-	mi := &file_proto_matching_proto_msgTypes[2]
+	mi := &file_matching_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -181,7 +181,7 @@ func (x *MatchClientsResponse) String() string {
 func (*MatchClientsResponse) ProtoMessage() {}
 
 func (x *MatchClientsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_matching_proto_msgTypes[2]
+	mi := &file_matching_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -194,7 +194,7 @@ func (x *MatchClientsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MatchClientsResponse.ProtoReflect.Descriptor instead.
 func (*MatchClientsResponse) Descriptor() ([]byte, []int) {
-	return file_proto_matching_proto_rawDescGZIP(), []int{2}
+	return file_matching_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *MatchClientsResponse) GetClients() []*ClientLocation {
@@ -204,11 +204,239 @@ func (x *MatchClientsResponse) GetClients() []*ClientLocation {
 	return nil
 }
 
-var File_proto_matching_proto protoreflect.FileDescriptor
+// UpdateUserStatusRequest contains fields to update a user's matching status.
+type UpdateUserStatusRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	DriverId      string                 `protobuf:"bytes,2,opt,name=driverId,proto3" json:"driverId,omitempty"`
+	Status        string                 `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
 
-const file_proto_matching_proto_rawDesc = "" +
+func (x *UpdateUserStatusRequest) Reset() {
+	*x = UpdateUserStatusRequest{}
+	mi := &file_matching_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateUserStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateUserStatusRequest) ProtoMessage() {}
+
+func (x *UpdateUserStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_matching_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateUserStatusRequest.ProtoReflect.Descriptor instead.
+func (*UpdateUserStatusRequest) Descriptor() ([]byte, []int) {
+	return file_matching_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *UpdateUserStatusRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *UpdateUserStatusRequest) GetDriverId() string {
+	if x != nil {
+		return x.DriverId
+	}
+	return ""
+}
+
+func (x *UpdateUserStatusRequest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+// UpdateUserStatusResponse provides a confirmation response for updating user status.
+type UpdateUserStatusResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateUserStatusResponse) Reset() {
+	*x = UpdateUserStatusResponse{}
+	mi := &file_matching_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateUserStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateUserStatusResponse) ProtoMessage() {}
+
+func (x *UpdateUserStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_matching_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateUserStatusResponse.ProtoReflect.Descriptor instead.
+func (*UpdateUserStatusResponse) Descriptor() ([]byte, []int) {
+	return file_matching_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *UpdateUserStatusResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+// GetUserMatchingStatusRequest is used to request a user's matching status.
+type GetUserMatchingStatusRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserMatchingStatusRequest) Reset() {
+	*x = GetUserMatchingStatusRequest{}
+	mi := &file_matching_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserMatchingStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserMatchingStatusRequest) ProtoMessage() {}
+
+func (x *GetUserMatchingStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_matching_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserMatchingStatusRequest.ProtoReflect.Descriptor instead.
+func (*GetUserMatchingStatusRequest) Descriptor() ([]byte, []int) {
+	return file_matching_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetUserMatchingStatusRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+// GetUserMatchingStatusResponse returns the matching status information for a user.
+type GetUserMatchingStatusResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"`
+	DriverId      string                 `protobuf:"bytes,2,opt,name=driverId,proto3" json:"driverId,omitempty"`
+	Status        string                 `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,4,opt,name=createdAt,proto3" json:"createdAt,omitempty"`
+	ClosedAt      string                 `protobuf:"bytes,5,opt,name=closedAt,proto3" json:"closedAt,omitempty"` // Optional: can be empty if not applicable.
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserMatchingStatusResponse) Reset() {
+	*x = GetUserMatchingStatusResponse{}
+	mi := &file_matching_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserMatchingStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserMatchingStatusResponse) ProtoMessage() {}
+
+func (x *GetUserMatchingStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_matching_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserMatchingStatusResponse.ProtoReflect.Descriptor instead.
+func (*GetUserMatchingStatusResponse) Descriptor() ([]byte, []int) {
+	return file_matching_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetUserMatchingStatusResponse) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *GetUserMatchingStatusResponse) GetDriverId() string {
+	if x != nil {
+		return x.DriverId
+	}
+	return ""
+}
+
+func (x *GetUserMatchingStatusResponse) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *GetUserMatchingStatusResponse) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *GetUserMatchingStatusResponse) GetClosedAt() string {
+	if x != nil {
+		return x.ClosedAt
+	}
+	return ""
+}
+
+var File_matching_proto protoreflect.FileDescriptor
+
+const file_matching_proto_rawDesc = "" +
 	"\n" +
-	"\x14proto/matching.proto\x12\bmatching\"}\n" +
+	"\x0ematching.proto\x12\bmatching\"}\n" +
 	"\x13MatchClientsRequest\x12\x1a\n" +
 	"\blatitude\x18\x01 \x01(\x01R\blatitude\x12\x1c\n" +
 	"\tlongitude\x18\x02 \x01(\x01R\tlongitude\x12\x16\n" +
@@ -220,59 +448,83 @@ const file_proto_matching_proto_rawDesc = "" +
 	"\tlongitude\x18\x03 \x01(\x01R\tlongitude\x12\x18\n" +
 	"\ageohash\x18\x04 \x01(\x04R\ageohash\"J\n" +
 	"\x14MatchClientsResponse\x122\n" +
-	"\aclients\x18\x01 \x03(\v2\x18.matching.ClientLocationR\aclients2`\n" +
+	"\aclients\x18\x01 \x03(\v2\x18.matching.ClientLocationR\aclients\"e\n" +
+	"\x17UpdateUserStatusRequest\x12\x16\n" +
+	"\x06userId\x18\x01 \x01(\tR\x06userId\x12\x1a\n" +
+	"\bdriverId\x18\x02 \x01(\tR\bdriverId\x12\x16\n" +
+	"\x06status\x18\x03 \x01(\tR\x06status\"4\n" +
+	"\x18UpdateUserStatusResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"6\n" +
+	"\x1cGetUserMatchingStatusRequest\x12\x16\n" +
+	"\x06userId\x18\x01 \x01(\tR\x06userId\"\xa5\x01\n" +
+	"\x1dGetUserMatchingStatusResponse\x12\x16\n" +
+	"\x06userId\x18\x01 \x01(\tR\x06userId\x12\x1a\n" +
+	"\bdriverId\x18\x02 \x01(\tR\bdriverId\x12\x16\n" +
+	"\x06status\x18\x03 \x01(\tR\x06status\x12\x1c\n" +
+	"\tcreatedAt\x18\x04 \x01(\tR\tcreatedAt\x12\x1a\n" +
+	"\bclosedAt\x18\x05 \x01(\tR\bclosedAt2\xa5\x02\n" +
 	"\x0fMatchingService\x12M\n" +
-	"\fMatchClients\x12\x1d.matching.MatchClientsRequest\x1a\x1e.matching.MatchClientsResponseB!Z\x1fmatching-service/proto;matchingb\x06proto3"
+	"\fMatchClients\x12\x1d.matching.MatchClientsRequest\x1a\x1e.matching.MatchClientsResponse\x12Y\n" +
+	"\x10UpdateUserStatus\x12!.matching.UpdateUserStatusRequest\x1a\".matching.UpdateUserStatusResponse\x12h\n" +
+	"\x15GetUserMatchingStatus\x12&.matching.GetUserMatchingStatusRequest\x1a'.matching.GetUserMatchingStatusResponseB!Z\x1fmatching-service/proto;matchingb\x06proto3"
 
 var (
-	file_proto_matching_proto_rawDescOnce sync.Once
-	file_proto_matching_proto_rawDescData []byte
+	file_matching_proto_rawDescOnce sync.Once
+	file_matching_proto_rawDescData []byte
 )
 
-func file_proto_matching_proto_rawDescGZIP() []byte {
-	file_proto_matching_proto_rawDescOnce.Do(func() {
-		file_proto_matching_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_matching_proto_rawDesc), len(file_proto_matching_proto_rawDesc)))
+func file_matching_proto_rawDescGZIP() []byte {
+	file_matching_proto_rawDescOnce.Do(func() {
+		file_matching_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_matching_proto_rawDesc), len(file_matching_proto_rawDesc)))
 	})
-	return file_proto_matching_proto_rawDescData
+	return file_matching_proto_rawDescData
 }
 
-var file_proto_matching_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_proto_matching_proto_goTypes = []any{
-	(*MatchClientsRequest)(nil),  // 0: matching.MatchClientsRequest
-	(*ClientLocation)(nil),       // 1: matching.ClientLocation
-	(*MatchClientsResponse)(nil), // 2: matching.MatchClientsResponse
+var file_matching_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_matching_proto_goTypes = []any{
+	(*MatchClientsRequest)(nil),           // 0: matching.MatchClientsRequest
+	(*ClientLocation)(nil),                // 1: matching.ClientLocation
+	(*MatchClientsResponse)(nil),          // 2: matching.MatchClientsResponse
+	(*UpdateUserStatusRequest)(nil),       // 3: matching.UpdateUserStatusRequest
+	(*UpdateUserStatusResponse)(nil),      // 4: matching.UpdateUserStatusResponse
+	(*GetUserMatchingStatusRequest)(nil),  // 5: matching.GetUserMatchingStatusRequest
+	(*GetUserMatchingStatusResponse)(nil), // 6: matching.GetUserMatchingStatusResponse
 }
-var file_proto_matching_proto_depIdxs = []int32{
+var file_matching_proto_depIdxs = []int32{
 	1, // 0: matching.MatchClientsResponse.clients:type_name -> matching.ClientLocation
 	0, // 1: matching.MatchingService.MatchClients:input_type -> matching.MatchClientsRequest
-	2, // 2: matching.MatchingService.MatchClients:output_type -> matching.MatchClientsResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
+	3, // 2: matching.MatchingService.UpdateUserStatus:input_type -> matching.UpdateUserStatusRequest
+	5, // 3: matching.MatchingService.GetUserMatchingStatus:input_type -> matching.GetUserMatchingStatusRequest
+	2, // 4: matching.MatchingService.MatchClients:output_type -> matching.MatchClientsResponse
+	4, // 5: matching.MatchingService.UpdateUserStatus:output_type -> matching.UpdateUserStatusResponse
+	6, // 6: matching.MatchingService.GetUserMatchingStatus:output_type -> matching.GetUserMatchingStatusResponse
+	4, // [4:7] is the sub-list for method output_type
+	1, // [1:4] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_proto_matching_proto_init() }
-func file_proto_matching_proto_init() {
-	if File_proto_matching_proto != nil {
+func init() { file_matching_proto_init() }
+func file_matching_proto_init() {
+	if File_matching_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_matching_proto_rawDesc), len(file_proto_matching_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_matching_proto_rawDesc), len(file_matching_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_proto_matching_proto_goTypes,
-		DependencyIndexes: file_proto_matching_proto_depIdxs,
-		MessageInfos:      file_proto_matching_proto_msgTypes,
+		GoTypes:           file_matching_proto_goTypes,
+		DependencyIndexes: file_matching_proto_depIdxs,
+		MessageInfos:      file_matching_proto_msgTypes,
 	}.Build()
-	File_proto_matching_proto = out.File
-	file_proto_matching_proto_goTypes = nil
-	file_proto_matching_proto_depIdxs = nil
+	File_matching_proto = out.File
+	file_matching_proto_goTypes = nil
+	file_matching_proto_depIdxs = nil
 }

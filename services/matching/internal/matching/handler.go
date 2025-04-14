@@ -3,9 +3,9 @@ package matching
 import (
 	"context"
 	"fmt"
-	"strings"
-
 	pb "matching-service/proto"
+	"strings"
+	"time"
 )
 
 type Handler struct {
@@ -57,4 +57,38 @@ func (h *Handler) MatchClients(ctx context.Context, req *pb.MatchClientsRequest)
 	return &pb.MatchClientsResponse{
 		Clients: []*pb.ClientLocation{pbClient},
 	}, nil
+}
+
+func (h *Handler) UpdateUserStatus(ctx context.Context, req *pb.UpdateUserStatusRequest) (*pb.UpdateUserStatusResponse, error) {
+	status := UserMatchingStatus{
+		UserID:    req.GetUserId(),
+		DriverID:  req.GetDriverId(),
+		Status:    Status(req.GetStatus()),
+		CreatedAt: time.Now(),
+	}
+
+	if err := h.service.UpdateUserStatus(ctx, status); err != nil {
+		return nil, fmt.Errorf("failed to update user status: %w", err)
+	}
+	return &pb.UpdateUserStatusResponse{
+		Message: "User status updated successfully",
+	}, nil
+}
+
+func (h *Handler) GetUserMatchingStatus(ctx context.Context, req *pb.GetUserMatchingStatusRequest) (*pb.GetUserMatchingStatusResponse, error) {
+	status, err := h.service.GetUserStatus(ctx, req.GetUserId())
+	if err != nil {
+		return nil, fmt.Errorf("could not fetch status for user %s: %w", req.GetUserId(), err)
+	}
+
+	resp := &pb.GetUserMatchingStatusResponse{
+		UserId:    status.UserID,
+		DriverId:  status.DriverID,
+		Status:    string(status.Status),
+		CreatedAt: status.CreatedAt.Format(time.RFC3339),
+	}
+	if status.ClosedAt != nil {
+		resp.ClosedAt = status.ClosedAt.Format(time.RFC3339)
+	}
+	return resp, nil
 }

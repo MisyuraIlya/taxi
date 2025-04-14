@@ -13,6 +13,8 @@ import (
 
 type Service interface {
 	MatchClients(ctx context.Context, latitude, longitude, radius float64, limit uint32) ([]*ClientLocation, error)
+	UpdateUserStatus(ctx context.Context, dto UserMatchingStatus) error
+	GetUserStatus(ctx context.Context, userID string) (*UserMatchingStatus, error)
 }
 
 type service struct {
@@ -27,6 +29,14 @@ func NewService(repo Repository) Service {
 
 func (s *service) MatchClients(ctx context.Context, latitude, longitude, radius float64, limit uint32) ([]*ClientLocation, error) {
 	return s.repository.FindClients(ctx, latitude, longitude, radius, limit)
+}
+
+func (s *service) UpdateUserStatus(ctx context.Context, dto UserMatchingStatus) error {
+	return s.repository.UpdateUserStatus(ctx, dto)
+}
+
+func (s *service) GetUserStatus(ctx context.Context, userID string) (*UserMatchingStatus, error) {
+	return s.repository.GetUserStatus(ctx, userID)
 }
 
 func SendNotification(driverID, message, notifyURL string) (string, error) {

@@ -2,14 +2,19 @@ package matching
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
-	"matching-service/pkg/redis"
 	geopb "matching-service/protoGeo"
+
+	"github.com/redis/go-redis/v9"
 )
 
 // Repository defines the methods to get matching clients.
 type Repository interface {
 	FindClients(ctx context.Context, latitude, longitude, radius float64, limit uint32) ([]*ClientLocation, error)
+	UpdateUserStatus(ctx context.Context, dto UserMatchingStatus) error
+	GetUserStatus(ctx context.Context, userID string) (*UserMatchingStatus, error)
 }
 
 type repository struct {
@@ -44,4 +49,50 @@ func (r *repository) FindClients(ctx context.Context, latitude, longitude, radiu
 		})
 	}
 	return clients, nil
+}
+
+func (r *repository) UpdateUserStatus(ctx context.Context, dto UserMatchingStatus) error {
+	key := fmt.Sprintf("user_status:%s", dto.UserID)
+
+	data, err := r.redis.Get(ctx, key).Result()
+	var updatedStatus UserMatchingStatus
+
+	if err == nil {
+		if err := json.Unmarshal([]byte(data), &updatedStatus); err != nil {
+			updatedStatus = dto
+		} else {
+			updatedStatus.DriverID = dto.DriverID
+			updatedStatus.Status = dto.Status
+			updatedStatus.CreatedAt = dto.CreatedAt
+			updatedStatus.ClosedAt = dto.ClosedAt
+		}
+	} else if err == redis.Nil {
+		updatedStatus = dto
+	} else {
+		return err
+	}
+
+	newData, err := json.Marshal(updatedStatus)
+	if err != nil {
+		return err
+	}
+
+	if err := r.redis.Set(ctx, key, newData, 0).Err(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *repository) GetUserStatus(ctx context.Context, userID string) (*UserMatchingStatus, error) {
+	key := fmt.Sprintf("user_status:%s", userID)
+	data, err := r.redis.Get(ctx, key).Result()
+	if err != nil {
+		return nil, err
+	}
+	var status UserMatchingStatus
+	if err := json.Unmarshal([]byte(data), &status); err != nil {
+		return nil, err
+	}
+	return &status, nil
 }

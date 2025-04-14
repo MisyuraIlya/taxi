@@ -19,6 +19,7 @@ import (
 func main() {
 	cfg := configs.LoadConfig()
 	redisClient := redis.NewRedisPool(cfg)
+
 	geoConn, err := grpc.Dial(cfg.GeoServiceURL, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	fmt.Printf("Connecting to geo service at %s\n", cfg.GeoServiceURL)
 	if err != nil {
@@ -28,7 +29,7 @@ func main() {
 
 	geoClient := geopb.NewGeoServiceClient(geoConn)
 
-	repo := matching.NewRepository(geoClient)
+	repo := matching.NewRepository(geoClient, redisClient)
 	svc := matching.NewService(repo)
 	handler := matching.NewHandler(svc)
 

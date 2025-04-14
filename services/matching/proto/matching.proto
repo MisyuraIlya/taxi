@@ -8,6 +8,12 @@ option go_package = "matching-service/proto;matching";
 service MatchingService {
   // MatchClients receives a request with location details and returns matching client locations.
   rpc MatchClients(MatchClientsRequest) returns (MatchClientsResponse);
+
+  // UpdateUserStatus updates the matching status of a user.
+  rpc UpdateUserStatus(UpdateUserStatusRequest) returns (UpdateUserStatusResponse);
+
+  // GetUserMatchingStatus fetches the current matching status of a user.
+  rpc GetUserMatchingStatus(GetUserMatchingStatusRequest) returns (GetUserMatchingStatusResponse);
 }
 
 // MatchClientsRequest is used to request matching client locations.
@@ -29,4 +35,30 @@ message ClientLocation {
 // MatchClientsResponse contains a list of client locations.
 message MatchClientsResponse {
   repeated ClientLocation clients = 1;
+}
+
+// UpdateUserStatusRequest contains fields to update a user's matching status.
+message UpdateUserStatusRequest {
+  string userId = 1;
+  string driverId = 2;
+  string status = 3;
+}
+
+// UpdateUserStatusResponse provides a confirmation response for updating user status.
+message UpdateUserStatusResponse {
+  string message = 1;
+}
+
+// GetUserMatchingStatusRequest is used to request a user's matching status.
+message GetUserMatchingStatusRequest {
+  string userId = 1;
+}
+
+// GetUserMatchingStatusResponse returns the matching status information for a user.
+message GetUserMatchingStatusResponse {
+  string userId = 1;
+  string driverId = 2;
+  string status = 3;
+  string createdAt = 4;
+  string closedAt = 5; // Optional: can be empty if not applicable.
 }
