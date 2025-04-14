@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package history;
+
+option go_package = "history-service/proto;history";
+
+// Request message for creating a history record.
+message CreateHistoryRequest {
+  string userId = 1;
+  string driverId = 2;
+  // Timestamps in RFC3339 format.
+  string createdAt = 3;
+  string closedAt = 4;
+  string from = 5;
+  string to = 6;
+}
+
+// Response message for CreateHistory.
+message CreateHistoryResponse {
+  string message = 1;
+}
+
+// Request message for retrieving history records.
+message GetHistoriesRequest {}
+
+// Message representing a single history record.
+message HistoryRecord {
+  string userId = 1;
+  string driverId = 2;
+  string createdAt = 3;
+  string closedAt = 4;
+  string from = 5;
+  string to = 6;
+}
+
+// Response message for GetHistories.
+message GetHistoriesResponse {
+  repeated HistoryRecord histories = 1;
+}
+
+service HistoryService {
+  rpc CreateHistory(CreateHistoryRequest) returns (CreateHistoryResponse);
+  rpc GetHistories(GetHistoriesRequest) returns (GetHistoriesResponse);
+}

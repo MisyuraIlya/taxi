@@ -78,8 +78,43 @@ services:
       - "8082:8082"
     command: ["air"]
 
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    networks:
+      - taxinet
+    ports:
+      - "8123:8123"  
+      - "9000:9000"
+    environment:
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD= 
+
+  history-service:
+    container_name: history-service
+    build:
+      context: ./services/history
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./services/history:/app
+    environment:
+      APP_PORT: ":8083"
+      CLICKHOUSE_HOST: clickhouse
+      CLICKHOUSE_PORT: "9000"
+    depends_on:
+      - clickhouse
+    networks:
+      - taxinet
+    ports:
+      - "8083:8083"
+    command: ["air"]
+
+
 volumes:
   redis_data:
+  clickhouse_data:
 
 networks:
   taxinet:
