@@ -1,0 +1,14 @@
+syntax = "proto3"
+
+package ride;
+
+option go_package = "ride-service/proto;ride";
+
+service StartRide {
+    rpc StartRide(RideRequest) returns (RideResponse);
+}
+
+message RideRequest {
+    string userId = 1;
+    string driverId = 1;
+}
