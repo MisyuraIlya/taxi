@@ -8,22 +8,18 @@ import (
 	pb "history-service/proto"
 )
 
-// GRPCHandler implements the gRPC HistoryServiceServer.
 type GRPCHandler struct {
 	pb.UnimplementedHistoryServiceServer
 	historyService Service
 }
 
-// NewGRPCHandler creates a new GRPCHandler.
 func NewGRPCHandler(s Service) *GRPCHandler {
 	return &GRPCHandler{
 		historyService: s,
 	}
 }
 
-// CreateHistory handles the creation of a history record.
 func (h *GRPCHandler) CreateHistory(ctx context.Context, req *pb.CreateHistoryRequest) (*pb.CreateHistoryResponse, error) {
-	// Parse timestamps from RFC3339 strings.
 	createdAt, err := time.Parse(time.RFC3339, req.GetCreatedAt())
 	if err != nil {
 		return nil, err
@@ -50,7 +46,6 @@ func (h *GRPCHandler) CreateHistory(ctx context.Context, req *pb.CreateHistoryRe
 	return &pb.CreateHistoryResponse{Message: "History saved successfully"}, nil
 }
 
-// GetHistories retrieves all stored history records.
 func (h *GRPCHandler) GetHistories(ctx context.Context, req *pb.GetHistoriesRequest) (*pb.GetHistoriesResponse, error) {
 	histories, err := h.historyService.GetHistories(ctx)
 	if err != nil {

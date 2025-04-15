@@ -25,7 +25,7 @@ func NewHistoryRepository(cfg *configs.Config) (Repository, error) {
 		Auth: clickhouse.Auth{
 			Database: "default",
 			Username: "default",
-			Password: "",
+			Password: "mysecretpassword",
 		},
 	})
 	if err != nil {
