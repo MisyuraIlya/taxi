@@ -22,6 +22,20 @@ services:
       - taxinet
     ports:
       - "6380:6379"
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    networks:
+      - taxinet
+    ports:
+      - "8123:8123"  
+      - "9000:9000"
+    environment:
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASSWORD=mysecretpassword
       
   geo-service:
     container_name: geo-service
@@ -78,20 +92,6 @@ services:
       - "8082:8082"
     command: ["air"]
 
-  clickhouse:
-    image: clickhouse/clickhouse-server:latest
-    container_name: clickhouse
-    volumes:
-      - clickhouse_data:/var/lib/clickhouse
-    networks:
-      - taxinet
-    ports:
-      - "8123:8123"  
-      - "9000:9000"
-    environment:
-      - CLICKHOUSE_USER=default
-      - CLICKHOUSE_PASSWORD=mysecretpassword
-
   history-service:
     container_name: history-service
     build:
@@ -109,6 +109,22 @@ services:
       - taxinet
     ports:
       - "8083:8083"
+    command: ["air"]
+
+  ride-service:
+    container_name: ride-service
+    build:
+      context: ./services/ride
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./services/ride:/app
+    environment:
+      APP_PORT: ":8084"
+      NOTIFICAION_SERVICE: "notification-service:8082"
+    networks:
+      - taxinet
+    ports:
+      - "8084:8084"
     command: ["air"]
 
 
