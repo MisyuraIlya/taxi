@@ -23,6 +23,17 @@ services:
     ports:
       - "6380:6379"
 
+  redis-ride:
+    image: redis:7
+    container_name: redis-ride
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - taxinet
+    ports:
+      - "6381:6379"
+
   clickhouse:
     image: clickhouse/clickhouse-server:latest
     container_name: clickhouse
@@ -119,8 +130,13 @@ services:
     volumes:
       - ./services/ride:/app
     environment:
-      APP_PORT: ":8084"
+      APP_PORT: "8084"
       NOTIFICAION_SERVICE: "notification-service:8082"
+      RIDE_REDIS_HOST: redis-ride
+      RIDE_REDIS_PORT: 6379
+    depends_on:
+      - notification-service
+      - redis-ride
     networks:
       - taxinet
     ports:
