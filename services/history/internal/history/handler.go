@@ -2,10 +2,9 @@ package history
 
 import (
 	"context"
+	pb "history-service/proto"
 	"log"
 	"time"
-
-	pb "history-service/proto"
 )
 
 type GRPCHandler struct {

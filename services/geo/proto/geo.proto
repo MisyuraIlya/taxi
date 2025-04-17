@@ -35,7 +35,6 @@ message GetLocationResponse {
   string longitude = 2;
 }
 
-// NEW: define the messages for finding nearby drivers
 message FindDriversRequest {
   double latitude = 1;
   double longitude = 2;

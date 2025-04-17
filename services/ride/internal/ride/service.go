@@ -3,7 +3,6 @@ package ride
 import (
 	"context"
 	"errors"
-
 	pb "ride-service/proto"
 )
 
