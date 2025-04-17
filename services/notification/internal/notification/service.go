@@ -20,7 +20,6 @@ var (
 	space   = []byte{' '}
 )
 
-// NewHub creates and returns a new Hub instance.
 func NewHub() *Hub {
 	return &Hub{
 		Clients:    make(map[string]*Client),
@@ -29,24 +28,31 @@ func NewHub() *Hub {
 	}
 }
 
-// Run handles registration and unregistration of clients.
 func (h *Hub) Run() {
 	for {
 		select {
 		case client := <-h.Register:
 			h.Clients[client.DriverID] = client
 			log.Printf("Driver %s registered: %v", client.DriverID, client.Conn.RemoteAddr())
+
+			if client.OnConnect != nil {
+				go client.OnConnect(client)
+			}
+
 		case client := <-h.Unregister:
 			if _, ok := h.Clients[client.DriverID]; ok {
 				delete(h.Clients, client.DriverID)
 				close(client.Send)
 				log.Printf("Driver %s unregistered: %v", client.DriverID, client.Conn.RemoteAddr())
+
+				if client.OnDisconnect != nil {
+					go client.OnDisconnect(client)
+				}
 			}
 		}
 	}
 }
 
-// BroadcastMessage is a helper to send a message to all connected drivers.
 func (h *Hub) BroadcastMessage(msg string) {
 	for _, client := range h.Clients {
 		select {
@@ -58,25 +64,20 @@ func (h *Hub) BroadcastMessage(msg string) {
 	}
 }
 
-// SendAndWaitForResponse sends a targeted message to the specified driver and
-// waits up to 5 seconds for a response (e.g., "accept" or "decline").
 func (h *Hub) SendAndWaitForResponse(driverID, message string) (string, error) {
 	client, ok := h.Clients[driverID]
 	if !ok {
 		return "", fmt.Errorf("driver %s not connected", driverID)
 	}
 
-	// Initialize a fresh PendingResponse channel.
 	client.PendingResponse = make(chan string, 1)
 
-	// Send the message to the driver's websocket.
 	select {
 	case client.Send <- []byte(message):
 	default:
 		return "", fmt.Errorf("failed to send message to driver %s", driverID)
 	}
 
-	// Wait for up to 5 seconds for a response.
 	select {
 	case resp := <-client.PendingResponse:
 		return resp, nil
@@ -85,9 +86,6 @@ func (h *Hub) SendAndWaitForResponse(driverID, message string) (string, error) {
 	}
 }
 
-// readPump reads messages from the WebSocket connection.
-// Here we assume that when a driver receives a notification, he sends back a simple response,
-// for example, plain text "accept" or "decline". These responses get relayed to the PendingResponse channel.
 func (c *Client) readPump() {
 	defer func() {
 		c.Hub.Unregister <- c
@@ -110,9 +108,7 @@ func (c *Client) readPump() {
 			break
 		}
 
-		// In this example, we assume the entire message is the driver's response.
 		response := string(message)
-		// If there is a pending response, forward the answer.
 		if c.PendingResponse != nil {
 			select {
 			case c.PendingResponse <- response:
@@ -122,7 +118,6 @@ func (c *Client) readPump() {
 	}
 }
 
-// writePump writes messages from the hub to the WebSocket connection.
 func (c *Client) writePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
@@ -145,7 +140,6 @@ func (c *Client) writePump() {
 			}
 			_, _ = writer.Write(msg)
 
-			// Write any queued messages in one WebSocket frame.
 			n := len(c.Send)
 			for i := 0; i < n; i++ {
 				_, _ = writer.Write(newline)

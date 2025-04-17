@@ -11,22 +11,13 @@ import (
 
 func main() {
 	cfg := configs.NewConfig()
-
-	// Create the notification hub.
 	hub := notification.NewHub()
-	// Start the hub's event loop in a separate goroutine.
 	go hub.Run()
-
-	// Create an HTTP multiplexer and register the endpoints.
 	mux := http.NewServeMux()
 	notification.SetupRoutes(mux, hub)
-
-	// Example: a periodic broadcast (optional)
 	go func() {
 		for {
 			time.Sleep(15 * time.Second)
-			// This is just an example broadcast.
-			// In your business logic, you will send targeted notifications.
 			hub.BroadcastMessage("Periodic broadcast from server!")
 		}
 	}()
