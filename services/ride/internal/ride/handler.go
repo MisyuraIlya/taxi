@@ -1,20 +1,21 @@
-// internal/ride/handler.go
 package ride
 
 import (
 	"context"
-	"ride-service/proto"
+	"fmt"
+	pb "ride-service/proto"
 )
 
 type handler struct {
-	proto.UnimplementedRideServiceServer
+	pb.UnimplementedRideServiceServer
 	service RideService
 }
 
-func NewRideHandler(svc RideService) proto.RideServiceServer {
+func NewRideHandler(svc RideService) pb.RideServiceServer {
 	return &handler{service: svc}
 }
 
-func (h *handler) CreateOrder(ctx context.Context, req *proto.CreateOrderRequest) (*proto.CreateOrderResponse, error) {
+func (h *handler) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*pb.CreateOrderResponse, error) {
+	fmt.Println("here2")
 	return h.service.CreateOrder(ctx, req)
 }

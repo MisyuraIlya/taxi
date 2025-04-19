@@ -7,9 +7,10 @@ import (
 	"fmt"
 	"math"
 	"net/http"
-	geoPb "ride-service/geoProto"
 	"strconv"
 	"time"
+
+	geo "ride-service/geoProto"
 )
 
 func distance(lat1, lon1, lat2, lon2 float64) float64 {
@@ -26,43 +27,42 @@ func distance(lat1, lon1, lat2, lon2 float64) float64 {
 
 func StartTracking(
 	ctx context.Context,
-	geoClient geoPb.GeoServiceClient,
+	geoClient geo.GeoServiceClient,
 	notifyURL, clientID, driverID string,
 	pickupLat, pickupLon float64,
 ) {
-	go func() {
-		ticker := time.NewTicker(5 * time.Second)
-		defer ticker.Stop()
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
+	fmt.Println("here5")
+	comingSoonNotified := false
+	arrivedNotified := false
 
-		comingSoonNotified := false
-		arrivedNotified := false
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		case <-ticker.C:
+			locResp, err := geoClient.GetLocation(ctx, &geo.GetLocationRequest{DriverId: driverID})
+			if err != nil {
+				fmt.Printf("tracking: GetLocation error: %v\n", err)
+				continue
+			}
 
-		for {
-			select {
-			case <-ctx.Done():
-				return
-			case <-ticker.C:
-				locResp, err := geoClient.GetLocation(ctx, &geoPb.GetLocationRequest{DriverId: driverID})
-				if err != nil {
-					fmt.Printf("tracking: GetLocation error: %v\n", err)
-					continue
-				}
-				dLat, _ := strconv.ParseFloat(locResp.Latitude, 64)
-				dLon, _ := strconv.ParseFloat(locResp.Longitude, 64)
-				dist := distance(pickupLat, pickupLon, dLat, dLon)
+			dLat, _ := strconv.ParseFloat(locResp.Latitude, 64)
+			dLon, _ := strconv.ParseFloat(locResp.Longitude, 64)
+			dist := distance(pickupLat, pickupLon, dLat, dLon)
 
-				if dist <= 50 && !comingSoonNotified {
-					sendClientNotification(notifyURL, clientID, "Driver is within 50 meters")
-					comingSoonNotified = true
-				}
-				// Within 5m → “arrived”
-				if dist <= 5 && !arrivedNotified {
-					sendClientNotification(notifyURL, clientID, "Driver has arrived")
-					arrivedNotified = true
-				}
+			if dist <= 50 && !comingSoonNotified {
+				sendClientNotification(notifyURL, clientID, "Driver is within 50 meters")
+				comingSoonNotified = true
+			}
+
+			if dist <= 5 && !arrivedNotified {
+				sendClientNotification(notifyURL, clientID, "Driver has arrived")
+				arrivedNotified = true
 			}
 		}
-	}()
+	}
 }
 
 func sendClientNotification(url, clientID, message string) {

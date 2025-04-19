@@ -37,7 +37,7 @@ func main() {
 	}
 
 	handler := ride.NewRideHandler(svc)
-
+	fmt.Println("here1")
 	address := fmt.Sprintf(":%s", cfg.AppPort)
 	lis, err := net.Listen("tcp", address)
 	if err != nil {

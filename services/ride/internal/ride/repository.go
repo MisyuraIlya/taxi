@@ -24,7 +24,7 @@ func NewRideRepository(rdb *redis.Client) RideRepository {
 
 func (r *rideRepository) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*pb.CreateOrderResponse, error) {
 	orderID := uuid.New().String()
-
+	fmt.Println("here4")
 	data, err := protojson.Marshal(req)
 
 	if err != nil {

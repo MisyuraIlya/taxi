@@ -4,19 +4,19 @@ import (
 	"context"
 	"fmt"
 
-	"ride-service/proto"
-	geoPb "ride-service/proto"
+	geo "ride-service/geoProto"
+	pb "ride-service/proto"
 
 	"google.golang.org/grpc"
 )
 
 type RideService interface {
-	CreateOrder(ctx context.Context, req *proto.CreateOrderRequest) (*proto.CreateOrderResponse, error)
+	CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*pb.CreateOrderResponse, error)
 }
 
 type service struct {
 	repo           RideRepository
-	geoClient      geoPb.GeoServiceClient
+	geoClient      geo.GeoServiceClient
 	notifyEndpoint string
 }
 
@@ -32,28 +32,26 @@ func NewRideService(
 
 	return &service{
 		repo:           repo,
-		geoClient:      geoPb.NewGeoServiceClient(conn),
+		geoClient:      geo.NewGeoServiceClient(conn),
 		notifyEndpoint: notifyEndpoint,
 	}, nil
 }
 
-func (s *service) CreateOrder(ctx context.Context, req *proto.CreateOrderRequest) (*proto.CreateOrderResponse, error) {
-	// 1) persist the order
+func (s *service) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*pb.CreateOrderResponse, error) {
+	fmt.Println("here3")
 	resp, err := s.repo.CreateOrder(ctx, req)
 	if err != nil {
 		return nil, err
 	}
 
-	// 2) launch tracker in background (fire‑and‑forget)
-
 	go StartTracking(
-		ctx,                 // parent context: will stop when ctx is canceled
-		s.geoClient,         // gRPC client to GeoService
-		s.notifyEndpoint,    // e.g. "http://localhost:8082/notify/clients"
-		req.UserId,          // client ID
-		req.DriverId,        // driver ID
-		req.PickupLatitude,  // pickup lat
-		req.PickupLongitude, // pickup lon
+		ctx,
+		s.geoClient,
+		s.notifyEndpoint,
+		req.UserId,
+		req.DriverId,
+		req.PickupLatitude,
+		req.PickupLongitude,
 	)
 
 	return resp, nil
