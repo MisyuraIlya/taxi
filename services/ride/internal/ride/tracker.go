@@ -28,8 +28,11 @@ func distance(lat1, lon1, lat2, lon2 float64) float64 {
 func StartTracking(
 	ctx context.Context,
 	geoClient geo.GeoServiceClient,
-	notifyURL, clientID, driverID string,
-	pickupLat, pickupLon float64,
+	notifyURL,
+	clientID,
+	driverID string,
+	pickupLat,
+	pickupLon float64,
 ) {
 	ticker := time.NewTicker(5 * time.Second)
 	defer ticker.Stop()
@@ -40,8 +43,10 @@ func StartTracking(
 	for {
 		select {
 		case <-ctx.Done():
+			fmt.Println("ctx done")
 			return
 		case <-ticker.C:
+			fmt.Println("ticker cc")
 			locResp, err := geoClient.GetLocation(ctx, &geo.GetLocationRequest{DriverId: driverID})
 			if err != nil {
 				fmt.Printf("tracking: GetLocation error: %v\n", err)
@@ -51,7 +56,7 @@ func StartTracking(
 			dLat, _ := strconv.ParseFloat(locResp.Latitude, 64)
 			dLon, _ := strconv.ParseFloat(locResp.Longitude, 64)
 			dist := distance(pickupLat, pickupLon, dLat, dLon)
-
+			fmt.Printf("driver %s: %f\n", driverID, dist)
 			if dist <= 50 && !comingSoonNotified {
 				sendClientNotification(notifyURL, clientID, "Driver is within 50 meters")
 				comingSoonNotified = true
@@ -66,6 +71,7 @@ func StartTracking(
 }
 
 func sendClientNotification(url, clientID, message string) {
+	fmt.Printf("notifying client %s: %s\n", clientID, message)
 	payload := map[string]string{
 		"client_id": clientID,
 		"message":   message,

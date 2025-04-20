@@ -39,13 +39,15 @@ func NewRideService(
 
 func (s *service) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*pb.CreateOrderResponse, error) {
 	fmt.Println("here3")
+	fmt.Println("driverId is:" + req.DriverId)
+
 	resp, err := s.repo.CreateOrder(ctx, req)
 	if err != nil {
 		return nil, err
 	}
 
 	go StartTracking(
-		ctx,
+		context.Background(),
 		s.geoClient,
 		s.notifyEndpoint,
 		req.UserId,
