@@ -26,7 +26,6 @@ func (r *rideRepository) CreateOrder(ctx context.Context, req *pb.CreateOrderReq
 	orderID := uuid.New().String()
 	fmt.Println("here4")
 	data, err := protojson.Marshal(req)
-
 	if err != nil {
 		return nil, fmt.Errorf("marshal CreateOrderRequest: %w", err)
 	}

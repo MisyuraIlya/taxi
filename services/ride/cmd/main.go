@@ -30,14 +30,13 @@ func main() {
 	svc, err := ride.NewRideService(
 		repo,
 		cfg.GeoServiceAddr,
-		"http://localhost:8082/notify/clients",
+		"http://notification-service:8082/notify/clients",
 	)
 	if err != nil {
 		log.Fatalf("Failed to initialize RideService: %v", err)
 	}
 
 	handler := ride.NewRideHandler(svc)
-	fmt.Println("here1")
 	address := fmt.Sprintf(":%s", cfg.AppPort)
 	lis, err := net.Listen("tcp", address)
 	if err != nil {

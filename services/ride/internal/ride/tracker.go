@@ -43,10 +43,8 @@ func StartTracking(
 	for {
 		select {
 		case <-ctx.Done():
-			fmt.Println("ctx done")
 			return
 		case <-ticker.C:
-			fmt.Println("ticker cc")
 			locResp, err := geoClient.GetLocation(ctx, &geo.GetLocationRequest{DriverId: driverID})
 			if err != nil {
 				fmt.Printf("tracking: GetLocation error: %v\n", err)
@@ -78,6 +76,7 @@ func sendClientNotification(url, clientID, message string) {
 	}
 	body, _ := json.Marshal(payload)
 	resp, err := http.Post(url, "application/json", bytes.NewReader(body))
+	fmt.Println(resp)
 	if err != nil {
 		fmt.Printf("notify error: %v\n", err)
 		return

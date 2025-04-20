@@ -2,7 +2,6 @@ package ride
 
 import (
 	"context"
-	"fmt"
 	pb "ride-service/proto"
 )
 
@@ -16,6 +15,5 @@ func NewRideHandler(svc RideService) pb.RideServiceServer {
 }
 
 func (h *handler) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*pb.CreateOrderResponse, error) {
-	fmt.Println("here2")
 	return h.service.CreateOrder(ctx, req)
 }
