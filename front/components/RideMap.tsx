@@ -1,7 +1,7 @@
 "use client";
 import { useLoadScript, GoogleMap, Marker, Polyline } from "@react-google-maps/api";
 import { useRef, useCallback } from "react";
-import { Ride } from "@/types/Ride";
+import { Ride } from "@/types/ride";
 
 const mapContainerStyle = { width: "100%", height: "100%" };
 
