@@ -95,9 +95,36 @@ export function RideProvider({ children }: { children: ReactNode }) {
     socket.send(JSON.stringify({ type: 'declineRide', rideId: ride.id }))
   }
 
-  const requestMatch = () => {
-    wsRef.current?.send(JSON.stringify({ type: 'requestRide' }))
+  // const requestMatch = () => {
+  //   wsRef.current?.send(JSON.stringify({ type: 'requestRide' }))
+  // }
+
+  const requestMatch = async () => {
+    if (!userId || !role) return
+  
+    // for a client, fetch the nearest drivers
+    // (you could also dynamically grab user location here)
+    try {
+      const res = await fetch(
+        `/api/findDrivers?latitude=${rides[0].pickup.lat}` +
+        `&longitude=${rides[0].pickup.lng}` +
+        `&radius=10&limit=20&status=active`
+      )
+      if (!res.ok) throw new Error(await res.text())
+      const data = await res.json()
+      console.log('data',data)
+      // replace your store's rides array
+      // useRideStore.getState().setRides(data.drivers)
+      // // optionally log an event
+      // useRideStore.getState()._addEvent(
+      //   `Fetched ${data.drivers.length} drivers via gRPC`
+      // )
+    } catch (e) {
+      console.error('requestMatch error', e)
+      useRideStore.getState()._addEvent(`Match error: ${(e as Error).message}`)
+    }
   }
+  
 
   const contextValue: RideContextValue = {
     role,
