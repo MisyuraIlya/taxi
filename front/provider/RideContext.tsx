@@ -1,9 +1,20 @@
 "use client";
 
-import { createContext, useContext, ReactNode, useEffect, useRef } from 'react'
+import { createContext, useContext, ReactNode, useEffect, useRef, useState } from 'react'
 import { Ride } from '@/types/ride'
 import { useRideStore } from '@/store/ride.store';
 import { useNoitifcation } from './NotificationProvider';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Button } from '@/components/ui/button';
 
 interface RideContextValue {
   role: 'driver' | 'client' | null
@@ -23,6 +34,7 @@ interface RideContextValue {
 const RideContext = createContext<RideContextValue | undefined>(undefined)
 
 export function RideProvider({ children }: { children: ReactNode }) {
+  const [dialogOpen, setDialogOpen] = useState(false) 
   const role = useRideStore((state) => state.role)
   const userId = useRideStore((state) => state.userId)
   const rides = useRideStore((state) => state.rides)
@@ -49,14 +61,14 @@ export function RideProvider({ children }: { children: ReactNode }) {
     socket.onmessage = (e) => {
       try {
         console.log('Received message:', e.data)
-        message('message',e.data)
+        
         const msg = JSON.parse(e.data)
         console.log('msg',msg)
-        if (role === 'driver' && msg.type === 'rideRequest') {
-          useRideStore.getState()._setPendingRide(msg.ride)
+        if (role === 'driver' && msg.message.type === 'rideRequest') {
+          message(msg.message.type,msg.message.data)
+          setDialogOpen(true)
         } else if (role === 'client') {
-          const entry = msg.type + (msg.data ? `: ${JSON.stringify(msg.data)}` : '')
-          useRideStore.getState()._addEvent(entry)
+          message(msg.message.type,msg.message.data)
         }
       } catch {
         useRideStore.getState()._setPendingRide(JSON.parse(e.data) as Ride)
@@ -72,9 +84,8 @@ export function RideProvider({ children }: { children: ReactNode }) {
   const acceptRide = () => {
     const socket = wsRef.current
     const ride = pendingRide
-    if (!socket || !ride) return
-    socket.send(JSON.stringify({ type: 'acceptRide', rideId: ride.id }))
-    useRideStore.getState()._setPendingRide(null)
+    if (!socket) return
+    socket.send('accept')
   }
 
   const declineRide = () => {
@@ -82,7 +93,6 @@ export function RideProvider({ children }: { children: ReactNode }) {
     const ride = pendingRide
     if (!socket || !ride) return
     socket.send(JSON.stringify({ type: 'declineRide', rideId: ride.id }))
-    useRideStore.getState()._setPendingRide(null)
   }
 
   const requestMatch = () => {
@@ -106,6 +116,32 @@ export function RideProvider({ children }: { children: ReactNode }) {
 
   return (
     <RideContext.Provider value={contextValue}>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>New Ride Request</DialogTitle>
+            <DialogDescription>
+              A client is requesting a ride. Would you like to accept?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="sm:justify-end">
+            <Button onClick={() => {
+              acceptRide()
+              setDialogOpen(false)
+            }}>
+              Accept
+            </Button>
+            <Button variant="secondary" onClick={() => {
+              declineRide()
+              setDialogOpen(false)
+            }}>
+              Decline
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
       {children}
     </RideContext.Provider>
   )

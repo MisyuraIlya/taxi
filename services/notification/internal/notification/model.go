@@ -17,3 +17,19 @@ type Hub struct {
 	Register   chan *Client
 	Unregister chan *Client
 }
+
+type Message struct {
+	Type string `json:"type"`
+	Data string `json:"data"`
+}
+
+type ClientMessage struct {
+	ClientID string  `json:"client_id"`
+	Message  Message `json:"message"`
+}
+
+type DriverMessage struct {
+	ClientID string  `json:"client_id,omitempty"`
+	DriverID string  `json:"driver_id,omitempty"`
+	Message  Message `json:"message"`
+}

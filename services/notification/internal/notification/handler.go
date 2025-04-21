@@ -17,6 +17,18 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+func SetupRoutes(mux *http.ServeMux, hub *Hub) {
+	mux.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
+		WsHandler(hub, w, r)
+	})
+	mux.HandleFunc("/notify/driver", func(w http.ResponseWriter, r *http.Request) {
+		TargetedNotifyHandler(hub, w, r)
+	})
+	mux.HandleFunc("/notify/clients", func(w http.ResponseWriter, r *http.Request) {
+		PushClientsHandler(hub, w, r)
+	})
+}
+
 func WsHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 	driverID := r.URL.Query().Get("driver_id")
 	clientID := r.URL.Query().Get("client_id")
@@ -63,13 +75,7 @@ func TargetedNotifyHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	type notifyRequest struct {
-		ClientID string `json:"client_id,omitempty"`
-		DriverID string `json:"driver_id,omitempty"`
-		Message  string `json:"message"`
-	}
-
-	var req notifyRequest
+	var req DriverMessage
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request: "+err.Error(), http.StatusBadRequest)
 		return
@@ -87,12 +93,18 @@ func TargetedNotifyHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.Message == "" {
+	if req.Message.Data == "" {
 		http.Error(w, "Missing message", http.StatusBadRequest)
 		return
 	}
 
-	response, err := hub.SendAndWaitForResponse(id, req.Message)
+	json, err := json.Marshal(req)
+	if err != nil {
+		http.Error(w, "Invalid request: "+err.Error(), http.StatusBadRequest)
+	}
+	jsonStr := string(json)
+
+	response, err := hub.SendAndWaitForResponse(id, jsonStr)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error sending to %s %s: %v", role, id, err), http.StatusInternalServerError)
 		return
@@ -103,23 +115,13 @@ func TargetedNotifyHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 }
 
 func PushClientsHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	// Expect exactly one of client_id or driver_id (but we'll only push to client here)
-	type pushRequest struct {
-		ClientID string `json:"client_id"`
-		Message  string `json:"message"`
-	}
-
-	var req pushRequest
+	var req ClientMessage
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request: "+err.Error(), http.StatusBadRequest)
 		return
 	}
-	if req.ClientID == "" || req.Message == "" {
+
+	if req.ClientID == "" || req.Message.Data == "" {
 		http.Error(w, "Missing client_id or message", http.StatusBadRequest)
 		return
 	}
@@ -130,9 +132,12 @@ func PushClientsHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Non‑blocking push
+	json, err := json.Marshal(req)
+	if err != nil {
+		http.Error(w, "Error marshalling json: "+err.Error(), http.StatusInternalServerError)
+	}
 	select {
-	case client.Send <- []byte(req.Message):
+	case client.Send <- json:
 	default:
 		// If their Send channel is full, drop the message or handle cleanup:
 		close(client.Send)
@@ -143,16 +148,4 @@ func PushClientsHandler(hub *Hub, w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Message pushed to client " + req.ClientID))
-}
-
-func SetupRoutes(mux *http.ServeMux, hub *Hub) {
-	mux.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		WsHandler(hub, w, r)
-	})
-	mux.HandleFunc("/notify/driver", func(w http.ResponseWriter, r *http.Request) {
-		TargetedNotifyHandler(hub, w, r)
-	})
-	mux.HandleFunc("/notify/clients", func(w http.ResponseWriter, r *http.Request) {
-		PushClientsHandler(hub, w, r)
-	})
 }
