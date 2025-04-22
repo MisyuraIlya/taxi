@@ -43,6 +43,7 @@ export function RideProvider({ children }: { children: ReactNode }) {
   const events = useRideStore((state) => state.events)
   const { message } = useNoitifcation()
   const wsRef = useRef<WebSocket | null>(null)
+  const { setDrivers } = useRideStore()
 
   useEffect(() => {
     if (!role || !userId) return
@@ -102,28 +103,25 @@ export function RideProvider({ children }: { children: ReactNode }) {
   const requestMatch = async () => {
     if (!userId || !role) return
   
-    // for a client, fetch the nearest drivers
-    // (you could also dynamically grab user location here)
     try {
       const res = await fetch(
-        `/api/findDrivers?latitude=${rides[0].pickup.lat}` +
-        `&longitude=${rides[0].pickup.lng}` +
-        `&radius=10&limit=20&status=active`
+        `/api/drivers?latitude=37.7749` +
+        `&longitude=-122.4194` +
+        `&radius=1000&limit=20&status=active`
       )
       if (!res.ok) throw new Error(await res.text())
       const data = await res.json()
-      console.log('data',data)
-      // replace your store's rides array
-      // useRideStore.getState().setRides(data.drivers)
-      // // optionally log an event
-      // useRideStore.getState()._addEvent(
-      //   `Fetched ${data.drivers.length} drivers via gRPC`
-      // )
+      setDrivers(data.drivers)
+
     } catch (e) {
       console.error('requestMatch error', e)
       useRideStore.getState()._addEvent(`Match error: ${(e as Error).message}`)
     }
   }
+
+  useEffect(() => {
+    requestMatch()
+  },[userId,role])
   
 
   const contextValue: RideContextValue = {
