@@ -4,7 +4,7 @@
 // 	protoc        v3.21.12
 // source: matching.proto
 
-package matching
+package proto
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -22,7 +22,7 @@ const (
 )
 
 // MatchClientsRequest is used to request matching client locations.
-type MatchClientsRequest struct {
+type MatchDriversRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Latitude      float64                `protobuf:"fixed64,1,opt,name=latitude,proto3" json:"latitude,omitempty"`
 	Longitude     float64                `protobuf:"fixed64,2,opt,name=longitude,proto3" json:"longitude,omitempty"`
@@ -32,20 +32,20 @@ type MatchClientsRequest struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *MatchClientsRequest) Reset() {
-	*x = MatchClientsRequest{}
+func (x *MatchDriversRequest) Reset() {
+	*x = MatchDriversRequest{}
 	mi := &file_matching_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *MatchClientsRequest) String() string {
+func (x *MatchDriversRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MatchClientsRequest) ProtoMessage() {}
+func (*MatchDriversRequest) ProtoMessage() {}
 
-func (x *MatchClientsRequest) ProtoReflect() protoreflect.Message {
+func (x *MatchDriversRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_matching_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -57,33 +57,33 @@ func (x *MatchClientsRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use MatchClientsRequest.ProtoReflect.Descriptor instead.
-func (*MatchClientsRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use MatchDriversRequest.ProtoReflect.Descriptor instead.
+func (*MatchDriversRequest) Descriptor() ([]byte, []int) {
 	return file_matching_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *MatchClientsRequest) GetLatitude() float64 {
+func (x *MatchDriversRequest) GetLatitude() float64 {
 	if x != nil {
 		return x.Latitude
 	}
 	return 0
 }
 
-func (x *MatchClientsRequest) GetLongitude() float64 {
+func (x *MatchDriversRequest) GetLongitude() float64 {
 	if x != nil {
 		return x.Longitude
 	}
 	return 0
 }
 
-func (x *MatchClientsRequest) GetRadius() float64 {
+func (x *MatchDriversRequest) GetRadius() float64 {
 	if x != nil {
 		return x.Radius
 	}
 	return 0
 }
 
-func (x *MatchClientsRequest) GetLimit() uint32 {
+func (x *MatchDriversRequest) GetLimit() uint32 {
 	if x != nil {
 		return x.Limit
 	}
@@ -91,9 +91,9 @@ func (x *MatchClientsRequest) GetLimit() uint32 {
 }
 
 // ClientLocation represents a client's location with userId, latitude, longitude, and a geohash.
-type ClientLocation struct {
+type DriverLocation struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=userId,proto3" json:"userId,omitempty"` // Mapped from geo service's DriverId to this service's userId.
+	DriverId      string                 `protobuf:"bytes,1,opt,name=driverId,proto3" json:"driverId,omitempty"` // Mapped from geo service's DriverId to this service's userId.
 	Latitude      float64                `protobuf:"fixed64,2,opt,name=latitude,proto3" json:"latitude,omitempty"`
 	Longitude     float64                `protobuf:"fixed64,3,opt,name=longitude,proto3" json:"longitude,omitempty"`
 	Geohash       uint64                 `protobuf:"varint,4,opt,name=geohash,proto3" json:"geohash,omitempty"`
@@ -101,20 +101,20 @@ type ClientLocation struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ClientLocation) Reset() {
-	*x = ClientLocation{}
+func (x *DriverLocation) Reset() {
+	*x = DriverLocation{}
 	mi := &file_matching_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ClientLocation) String() string {
+func (x *DriverLocation) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ClientLocation) ProtoMessage() {}
+func (*DriverLocation) ProtoMessage() {}
 
-func (x *ClientLocation) ProtoReflect() protoreflect.Message {
+func (x *DriverLocation) ProtoReflect() protoreflect.Message {
 	mi := &file_matching_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -126,33 +126,33 @@ func (x *ClientLocation) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ClientLocation.ProtoReflect.Descriptor instead.
-func (*ClientLocation) Descriptor() ([]byte, []int) {
+// Deprecated: Use DriverLocation.ProtoReflect.Descriptor instead.
+func (*DriverLocation) Descriptor() ([]byte, []int) {
 	return file_matching_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *ClientLocation) GetUserId() string {
+func (x *DriverLocation) GetDriverId() string {
 	if x != nil {
-		return x.UserId
+		return x.DriverId
 	}
 	return ""
 }
 
-func (x *ClientLocation) GetLatitude() float64 {
+func (x *DriverLocation) GetLatitude() float64 {
 	if x != nil {
 		return x.Latitude
 	}
 	return 0
 }
 
-func (x *ClientLocation) GetLongitude() float64 {
+func (x *DriverLocation) GetLongitude() float64 {
 	if x != nil {
 		return x.Longitude
 	}
 	return 0
 }
 
-func (x *ClientLocation) GetGeohash() uint64 {
+func (x *DriverLocation) GetGeohash() uint64 {
 	if x != nil {
 		return x.Geohash
 	}
@@ -160,27 +160,27 @@ func (x *ClientLocation) GetGeohash() uint64 {
 }
 
 // MatchClientsResponse contains a list of client locations.
-type MatchClientsResponse struct {
+type MatchDriversResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Clients       []*ClientLocation      `protobuf:"bytes,1,rep,name=clients,proto3" json:"clients,omitempty"`
+	Drivers       []*DriverLocation      `protobuf:"bytes,1,rep,name=drivers,proto3" json:"drivers,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *MatchClientsResponse) Reset() {
-	*x = MatchClientsResponse{}
+func (x *MatchDriversResponse) Reset() {
+	*x = MatchDriversResponse{}
 	mi := &file_matching_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *MatchClientsResponse) String() string {
+func (x *MatchDriversResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MatchClientsResponse) ProtoMessage() {}
+func (*MatchDriversResponse) ProtoMessage() {}
 
-func (x *MatchClientsResponse) ProtoReflect() protoreflect.Message {
+func (x *MatchDriversResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_matching_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -192,14 +192,14 @@ func (x *MatchClientsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use MatchClientsResponse.ProtoReflect.Descriptor instead.
-func (*MatchClientsResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use MatchDriversResponse.ProtoReflect.Descriptor instead.
+func (*MatchDriversResponse) Descriptor() ([]byte, []int) {
 	return file_matching_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *MatchClientsResponse) GetClients() []*ClientLocation {
+func (x *MatchDriversResponse) GetDrivers() []*DriverLocation {
 	if x != nil {
-		return x.Clients
+		return x.Drivers
 	}
 	return nil
 }
@@ -437,18 +437,18 @@ var File_matching_proto protoreflect.FileDescriptor
 const file_matching_proto_rawDesc = "" +
 	"\n" +
 	"\x0ematching.proto\x12\bmatching\"}\n" +
-	"\x13MatchClientsRequest\x12\x1a\n" +
+	"\x13MatchDriversRequest\x12\x1a\n" +
 	"\blatitude\x18\x01 \x01(\x01R\blatitude\x12\x1c\n" +
 	"\tlongitude\x18\x02 \x01(\x01R\tlongitude\x12\x16\n" +
 	"\x06radius\x18\x03 \x01(\x01R\x06radius\x12\x14\n" +
-	"\x05limit\x18\x04 \x01(\rR\x05limit\"|\n" +
-	"\x0eClientLocation\x12\x16\n" +
-	"\x06userId\x18\x01 \x01(\tR\x06userId\x12\x1a\n" +
+	"\x05limit\x18\x04 \x01(\rR\x05limit\"\x80\x01\n" +
+	"\x0eDriverLocation\x12\x1a\n" +
+	"\bdriverId\x18\x01 \x01(\tR\bdriverId\x12\x1a\n" +
 	"\blatitude\x18\x02 \x01(\x01R\blatitude\x12\x1c\n" +
 	"\tlongitude\x18\x03 \x01(\x01R\tlongitude\x12\x18\n" +
 	"\ageohash\x18\x04 \x01(\x04R\ageohash\"J\n" +
-	"\x14MatchClientsResponse\x122\n" +
-	"\aclients\x18\x01 \x03(\v2\x18.matching.ClientLocationR\aclients\"e\n" +
+	"\x14MatchDriversResponse\x122\n" +
+	"\adrivers\x18\x01 \x03(\v2\x18.matching.DriverLocationR\adrivers\"e\n" +
 	"\x17UpdateUserStatusRequest\x12\x16\n" +
 	"\x06userId\x18\x01 \x01(\tR\x06userId\x12\x1a\n" +
 	"\bdriverId\x18\x02 \x01(\tR\bdriverId\x12\x16\n" +
@@ -464,7 +464,7 @@ const file_matching_proto_rawDesc = "" +
 	"\tcreatedAt\x18\x04 \x01(\tR\tcreatedAt\x12\x1a\n" +
 	"\bclosedAt\x18\x05 \x01(\tR\bclosedAt2\xa5\x02\n" +
 	"\x0fMatchingService\x12M\n" +
-	"\fMatchClients\x12\x1d.matching.MatchClientsRequest\x1a\x1e.matching.MatchClientsResponse\x12Y\n" +
+	"\fMatchClients\x12\x1d.matching.MatchDriversRequest\x1a\x1e.matching.MatchDriversResponse\x12Y\n" +
 	"\x10UpdateUserStatus\x12!.matching.UpdateUserStatusRequest\x1a\".matching.UpdateUserStatusResponse\x12h\n" +
 	"\x15GetUserMatchingStatus\x12&.matching.GetUserMatchingStatusRequest\x1a'.matching.GetUserMatchingStatusResponseB!Z\x1fmatching-service/proto;matchingb\x06proto3"
 
@@ -482,20 +482,20 @@ func file_matching_proto_rawDescGZIP() []byte {
 
 var file_matching_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_matching_proto_goTypes = []any{
-	(*MatchClientsRequest)(nil),           // 0: matching.MatchClientsRequest
-	(*ClientLocation)(nil),                // 1: matching.ClientLocation
-	(*MatchClientsResponse)(nil),          // 2: matching.MatchClientsResponse
+	(*MatchDriversRequest)(nil),           // 0: matching.MatchDriversRequest
+	(*DriverLocation)(nil),                // 1: matching.DriverLocation
+	(*MatchDriversResponse)(nil),          // 2: matching.MatchDriversResponse
 	(*UpdateUserStatusRequest)(nil),       // 3: matching.UpdateUserStatusRequest
 	(*UpdateUserStatusResponse)(nil),      // 4: matching.UpdateUserStatusResponse
 	(*GetUserMatchingStatusRequest)(nil),  // 5: matching.GetUserMatchingStatusRequest
 	(*GetUserMatchingStatusResponse)(nil), // 6: matching.GetUserMatchingStatusResponse
 }
 var file_matching_proto_depIdxs = []int32{
-	1, // 0: matching.MatchClientsResponse.clients:type_name -> matching.ClientLocation
-	0, // 1: matching.MatchingService.MatchClients:input_type -> matching.MatchClientsRequest
+	1, // 0: matching.MatchDriversResponse.drivers:type_name -> matching.DriverLocation
+	0, // 1: matching.MatchingService.MatchClients:input_type -> matching.MatchDriversRequest
 	3, // 2: matching.MatchingService.UpdateUserStatus:input_type -> matching.UpdateUserStatusRequest
 	5, // 3: matching.MatchingService.GetUserMatchingStatus:input_type -> matching.GetUserMatchingStatusRequest
-	2, // 4: matching.MatchingService.MatchClients:output_type -> matching.MatchClientsResponse
+	2, // 4: matching.MatchingService.MatchClients:output_type -> matching.MatchDriversResponse
 	4, // 5: matching.MatchingService.UpdateUserStatus:output_type -> matching.UpdateUserStatusResponse
 	6, // 6: matching.MatchingService.GetUserMatchingStatus:output_type -> matching.GetUserMatchingStatusResponse
 	4, // [4:7] is the sub-list for method output_type

@@ -19,7 +19,7 @@ func NewHandler(service Service) *Handler {
 	}
 }
 
-func (h *Handler) MatchClients(ctx context.Context, req *pb.MatchClientsRequest) (*pb.MatchClientsResponse, error) {
+func (h *Handler) MatchClients(ctx context.Context, req *pb.MatchDriversRequest) (*pb.MatchDriversResponse, error) {
 	clients, err := h.service.MatchClients(ctx, req.GetLatitude(), req.GetLongitude(), req.GetRadius(), req.GetLimit())
 	if err != nil {
 		return nil, err
@@ -47,15 +47,15 @@ func (h *Handler) MatchClients(ctx context.Context, req *pb.MatchClientsRequest)
 		return nil, fmt.Errorf("no driver accepted the ride")
 	}
 
-	pbClient := &pb.ClientLocation{
-		UserId:    acceptedClient.UserID,
+	pbClient := &pb.DriverLocation{
+		DriverId:  acceptedClient.UserID,
 		Latitude:  acceptedClient.Latitude,
 		Longitude: acceptedClient.Longitude,
 		Geohash:   acceptedClient.Geohash,
 	}
 
-	return &pb.MatchClientsResponse{
-		Clients: []*pb.ClientLocation{pbClient},
+	return &pb.MatchDriversResponse{
+		Drivers: []*pb.DriverLocation{pbClient},
 	}, nil
 }
 

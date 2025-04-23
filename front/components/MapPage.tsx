@@ -21,7 +21,7 @@ export default function MapPage() {
     events,
     acceptRide,
     declineRide,
-    requestMatch,
+    matchService,
   } = useRide();
 
   return (
@@ -52,7 +52,7 @@ export default function MapPage() {
         )}
 
         {role === "client" && (
-          <Button onClick={requestMatch} className="w-full">
+          <Button onClick={matchService} className="w-full">
             Match Ride
           </Button>
         )}

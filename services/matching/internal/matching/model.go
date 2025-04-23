@@ -29,3 +29,13 @@ type UserMatchingStatus struct {
 	CreatedAt time.Time  `json:"created_at"`
 	ClosedAt  *time.Time `json:"closed_at,omitempty"`
 }
+
+type Message struct {
+	Type string `json:"type"`
+	Data string `json:"data"`
+}
+
+type PayloadMessage struct {
+	ClientID string  `json:"driver_id"`
+	Message  Message `json:"message"`
+}

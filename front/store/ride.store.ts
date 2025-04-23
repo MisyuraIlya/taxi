@@ -24,6 +24,13 @@ interface RideState {
   // Global location state
   latitude: number | null
   longitude: number | null
+  driverLatitude: number | null
+  driverLongitude: number | null
+
+  setDriverLongitude: (val: number) => void
+  setDriverLatitude: (val: number) => void
+
+  
 
   setRole: (role: 'driver' | 'client' | null) => void
   setUserId: (id: string | null) => void
@@ -63,6 +70,13 @@ export const useRideStore = create<RideState>()(
       // Initialize location state
       latitude: null,
       longitude: null,
+
+      //
+      driverLatitude: null,
+      driverLongitude: null,
+
+      setDriverLatitude: (driverLatitude) => set({driverLatitude}),
+      setDriverLongitude: (driverLongitude) => set({driverLongitude}),
 
       setRole: (role) => set({ role }),
       setUserId: (userId) => set({ userId }),

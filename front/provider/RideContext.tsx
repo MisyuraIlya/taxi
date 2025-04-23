@@ -29,6 +29,7 @@ interface RideContextValue {
   acceptRide: () => void
   declineRide: () => void
   requestMatch: () => void
+  matchService: () => void
 }
 
 const RideContext = createContext<RideContextValue | undefined>(undefined)
@@ -43,7 +44,8 @@ export function RideProvider({ children }: { children: ReactNode }) {
   const events = useRideStore((state) => state.events)
   const { message } = useNoitifcation()
   const wsRef = useRef<WebSocket | null>(null)
-  const { setDrivers } = useRideStore()
+  const { setDrivers, latitude, longitude, drivers, setDriverLatitude, setDriverLongitude } = useRideStore()
+
 
   useEffect(() => {
     if (!role || !userId) return
@@ -119,6 +121,31 @@ export function RideProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const matchService = async () => {
+    if (!userId || !role) return
+    try {
+      const res = await fetch(
+        `/api/matchService`
+      ,{
+        method:'POST',
+        body:JSON.stringify({longitude, latitude, radius:1000, limit:10})
+      })
+      if (!res.ok) {
+        message("driver on the way","no drivers found around")
+      }
+      const data = await res.json()
+      message("driver on the way",data?.drivers[0]?.driverId)
+      const deleteDriver = drivers.filter((x) => x.driverId !== data?.drivers[0]?.driverId)
+      setDriverLatitude(data?.drivers[0]?.latitude)
+      setDriverLongitude(data?.drivers[0]?.longitude)
+      setDrivers(deleteDriver)
+    } catch (e) {
+      console.error('requestMatch error', e)
+      message("error in match",``)
+    }
+    
+  }
+
   useEffect(() => {
     requestMatch()
   },[userId,role])
@@ -137,6 +164,7 @@ export function RideProvider({ children }: { children: ReactNode }) {
     acceptRide,
     declineRide,
     requestMatch,
+    matchService
   }
 
   return (

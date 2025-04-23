@@ -1,18 +1,17 @@
-// app/api/drivers/route.ts
 export const runtime = 'nodejs'
 
 import { NextResponse } from 'next/server'
-import { geoClient } from '@/lib/grpcClient'
+import { geoClient }     from '@/lib/grpcClient'
+import grpc, { ServiceError } from '@grpc/grpc-js'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
 
-  // pull out params (with defaults)
   const latitudeRaw  = searchParams.get('latitude')
   const longitudeRaw = searchParams.get('longitude')
-  const radiusRaw    = searchParams.get('radius')    ?? '5'
-  const limitRaw     = searchParams.get('limit')     ?? '10'
-  const status       = searchParams.get('status')    ?? 'active'
+  const radiusRaw    = searchParams.get('radius') ?? '5'
+  const limitRaw     = searchParams.get('limit')  ?? '10'
+  const status       = searchParams.get('status') ?? 'active'
 
   if (!latitudeRaw || !longitudeRaw) {
     return NextResponse.json(
@@ -30,7 +29,7 @@ export async function GET(request: Request) {
   }
 
   return new Promise<NextResponse>((resolve) => {
-    geoClient.FindDrivers(payload, (err:any, reply:any) => {
+    geoClient.FindDrivers(payload, (err: grpc.ServiceError | null, reply: any) => {
       if (err) {
         console.error('[gRPC FindDrivers]', err)
         resolve(

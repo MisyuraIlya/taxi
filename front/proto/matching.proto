@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package matching;
+
+option go_package = "matching-service/proto;matching";
+
+// MatchingService defines the gRPC API for matching client locations.
+service MatchingService {
+  // MatchClients receives a request with location details and returns matching client locations.
+  rpc MatchClients(MatchDriversRequest) returns (MatchDriversResponse);
+
+  // UpdateUserStatus updates the matching status of a user.
+  rpc UpdateUserStatus(UpdateUserStatusRequest) returns (UpdateUserStatusResponse);
+
+  // GetUserMatchingStatus fetches the current matching status of a user.
+  rpc GetUserMatchingStatus(GetUserMatchingStatusRequest) returns (GetUserMatchingStatusResponse);
+}
+
+// MatchClientsRequest is used to request matching client locations.
+message MatchDriversRequest {
+  double latitude = 1;
+  double longitude = 2;
+  double radius = 3; // The search radius in meters.
+  uint32 limit = 4;  // The maximum number of clients to return.
+}
+
+// ClientLocation represents a client's location with userId, latitude, longitude, and a geohash.
+message DriverLocation {
+  string driverId = 1;       // Mapped from geo service's DriverId to this service's userId.
+  double latitude = 2;
+  double longitude = 3;
+  uint64 geohash = 4;
+}
+
+// MatchClientsResponse contains a list of client locations.
+message MatchDriversResponse {
+  repeated DriverLocation drivers = 1;
+}
+
+// UpdateUserStatusRequest contains fields to update a user's matching status.
+message UpdateUserStatusRequest {
+  string userId = 1;
+  string driverId = 2;
+  string status = 3;
+}
+
+// UpdateUserStatusResponse provides a confirmation response for updating user status.
+message UpdateUserStatusResponse {
+  string message = 1;
+}
+
+// GetUserMatchingStatusRequest is used to request a user's matching status.
+message GetUserMatchingStatusRequest {
+  string userId = 1;
+}
+
+// GetUserMatchingStatusResponse returns the matching status information for a user.
+message GetUserMatchingStatusResponse {
+  string userId = 1;
+  string driverId = 2;
+  string status = 3;
+  string createdAt = 4;
+  string closedAt = 5; // Optional: can be empty if not applicable.
+}

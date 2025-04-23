@@ -38,6 +38,9 @@ func (r *repository) FindClients(ctx context.Context, latitude, longitude, radiu
 	if err != nil {
 		return nil, err
 	}
+	if len(resp.GetDrivers()) == 0 {
+		return nil, fmt.Errorf("no drivers found within the given radius")
+	}
 
 	var clients []*ClientLocation
 	for _, d := range resp.Drivers {

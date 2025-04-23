@@ -40,12 +40,12 @@ func (s *service) GetUserStatus(ctx context.Context, userID string) (*UserMatchi
 }
 
 func SendNotification(driverID, message, notifyURL string) (string, error) {
-	payload := struct {
-		DriverID string `json:"driver_id"`
-		Message  string `json:"message"`
-	}{
-		DriverID: driverID,
-		Message:  message,
+	payload := PayloadMessage{
+		ClientID: driverID,
+		Message: Message{
+			Type: "rideRequest",
+			Data: message,
+		},
 	}
 
 	data, err := json.Marshal(payload)

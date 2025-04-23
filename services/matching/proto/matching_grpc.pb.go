@@ -4,7 +4,7 @@
 // - protoc             v3.21.12
 // source: matching.proto
 
-package matching
+package proto
 
 import (
 	context "context"
@@ -31,7 +31,7 @@ const (
 // MatchingService defines the gRPC API for matching client locations.
 type MatchingServiceClient interface {
 	// MatchClients receives a request with location details and returns matching client locations.
-	MatchClients(ctx context.Context, in *MatchClientsRequest, opts ...grpc.CallOption) (*MatchClientsResponse, error)
+	MatchClients(ctx context.Context, in *MatchDriversRequest, opts ...grpc.CallOption) (*MatchDriversResponse, error)
 	// UpdateUserStatus updates the matching status of a user.
 	UpdateUserStatus(ctx context.Context, in *UpdateUserStatusRequest, opts ...grpc.CallOption) (*UpdateUserStatusResponse, error)
 	// GetUserMatchingStatus fetches the current matching status of a user.
@@ -46,9 +46,9 @@ func NewMatchingServiceClient(cc grpc.ClientConnInterface) MatchingServiceClient
 	return &matchingServiceClient{cc}
 }
 
-func (c *matchingServiceClient) MatchClients(ctx context.Context, in *MatchClientsRequest, opts ...grpc.CallOption) (*MatchClientsResponse, error) {
+func (c *matchingServiceClient) MatchClients(ctx context.Context, in *MatchDriversRequest, opts ...grpc.CallOption) (*MatchDriversResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MatchClientsResponse)
+	out := new(MatchDriversResponse)
 	err := c.cc.Invoke(ctx, MatchingService_MatchClients_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -83,7 +83,7 @@ func (c *matchingServiceClient) GetUserMatchingStatus(ctx context.Context, in *G
 // MatchingService defines the gRPC API for matching client locations.
 type MatchingServiceServer interface {
 	// MatchClients receives a request with location details and returns matching client locations.
-	MatchClients(context.Context, *MatchClientsRequest) (*MatchClientsResponse, error)
+	MatchClients(context.Context, *MatchDriversRequest) (*MatchDriversResponse, error)
 	// UpdateUserStatus updates the matching status of a user.
 	UpdateUserStatus(context.Context, *UpdateUserStatusRequest) (*UpdateUserStatusResponse, error)
 	// GetUserMatchingStatus fetches the current matching status of a user.
@@ -98,7 +98,7 @@ type MatchingServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedMatchingServiceServer struct{}
 
-func (UnimplementedMatchingServiceServer) MatchClients(context.Context, *MatchClientsRequest) (*MatchClientsResponse, error) {
+func (UnimplementedMatchingServiceServer) MatchClients(context.Context, *MatchDriversRequest) (*MatchDriversResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MatchClients not implemented")
 }
 func (UnimplementedMatchingServiceServer) UpdateUserStatus(context.Context, *UpdateUserStatusRequest) (*UpdateUserStatusResponse, error) {
@@ -129,7 +129,7 @@ func RegisterMatchingServiceServer(s grpc.ServiceRegistrar, srv MatchingServiceS
 }
 
 func _MatchingService_MatchClients_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MatchClientsRequest)
+	in := new(MatchDriversRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -141,7 +141,7 @@ func _MatchingService_MatchClients_Handler(srv interface{}, ctx context.Context,
 		FullMethod: MatchingService_MatchClients_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MatchingServiceServer).MatchClients(ctx, req.(*MatchClientsRequest))
+		return srv.(MatchingServiceServer).MatchClients(ctx, req.(*MatchDriversRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
