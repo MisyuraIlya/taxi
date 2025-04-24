@@ -18,7 +18,12 @@ export default function IDInput() {
   }
 
   const test = () => {
-    setUserId('client123')
+    if (role === "driver") {
+      setUserId('driver123')
+    }
+    if( role === "client") {
+      setUserId('client123')
+    }
     setLatitude(37.7723)
     setLongitude(-122.4182)
     router.push("/match");
@@ -33,11 +38,24 @@ export default function IDInput() {
         className="border rounded-lg p-2 w-64"
         placeholder="Your ID"
       />
-      <p>
-        test : client123 <br/>
-        latitude: 37.7723 <br/>
-        longitude: -122.4182 <br/>
-      </p>
+      {role === "client" && (      
+        <p>
+          test : client123 <br/>
+          latitude: 37.7723 <br/>
+          longitude: -122.4182 <br/>
+        </p>
+        )
+      }
+
+      {role === "driver" && (      
+        <p>
+          test: driver123 <br/>
+          latitude: 37.773 <br/>
+          longitude: -122.4182 <br/>
+        </p>
+        )
+      }
+
       <Button onClick={() => test()}>
         test
       </Button>

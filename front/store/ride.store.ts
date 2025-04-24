@@ -24,6 +24,8 @@ interface RideState {
   // Global location state
   latitude: number | null
   longitude: number | null
+
+  driverId: string | null
   driverLatitude: number | null
   driverLongitude: number | null
 
@@ -49,6 +51,7 @@ interface RideState {
   setLatitude: (latitude: number | null) => void
   setLongitude: (longitude: number | null) => void
   setLocation: (latitude: number | null, longitude: number | null) => void
+  setDriverId: (driverId: string | null) => void
 }
 
 export const useRideStore = create<RideState>()(
@@ -72,6 +75,7 @@ export const useRideStore = create<RideState>()(
       longitude: null,
 
       //
+      driverId: null,
       driverLatitude: null,
       driverLongitude: null,
 
@@ -99,6 +103,7 @@ export const useRideStore = create<RideState>()(
       setLatitude: (latitude) => set({ latitude }),
       setLongitude: (longitude) => set({ longitude }),
       setLocation: (latitude, longitude) => set({ latitude, longitude }),
+      setDriverId: (driverId) => set({ driverId }),
     }),
     {
       name: 'ride-storage',

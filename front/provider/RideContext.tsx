@@ -36,6 +36,7 @@ const RideContext = createContext<RideContextValue | undefined>(undefined)
 
 export function RideProvider({ children }: { children: ReactNode }) {
   const [dialogOpen, setDialogOpen] = useState(false) 
+  const [isInRide, setIsInRide] = useState(false)
   const role = useRideStore((state) => state.role)
   const userId = useRideStore((state) => state.userId)
   const rides = useRideStore((state) => state.rides)
@@ -44,7 +45,7 @@ export function RideProvider({ children }: { children: ReactNode }) {
   const events = useRideStore((state) => state.events)
   const { message } = useNoitifcation()
   const wsRef = useRef<WebSocket | null>(null)
-  const { setDrivers, latitude, longitude, drivers, setDriverLatitude, setDriverLongitude } = useRideStore()
+  const { setDrivers, latitude, longitude, drivers, driverId, setDriverLatitude, setDriverLongitude, setDriverId } = useRideStore()
 
 
   useEffect(() => {
@@ -98,9 +99,22 @@ export function RideProvider({ children }: { children: ReactNode }) {
     socket.send(JSON.stringify({ type: 'declineRide', rideId: ride.id }))
   }
 
-  // const requestMatch = () => {
-  //   wsRef.current?.send(JSON.stringify({ type: 'requestRide' }))
-  // }
+  const handleDriverLocation =  async () => {
+    if (!userId || !role) return
+    try {
+      const res = await fetch(
+        `/api/driver/${driverId}`
+      )
+      if (!res.ok) throw new Error(await res.text())
+      const data = await res.json()
+    console.log('driver location',data)
+      setIsInRide(true)
+      setDriverLatitude(+data.latitude)
+      setDriverLongitude(+data.longitude)
+    } catch (e) {
+      console.error('requestMatch error', e)
+    }
+  } 
 
   const requestMatch = async () => {
     if (!userId || !role) return
@@ -136,6 +150,7 @@ export function RideProvider({ children }: { children: ReactNode }) {
       const data = await res.json()
       message("driver on the way",data?.drivers[0]?.driverId)
       const deleteDriver = drivers.filter((x) => x.driverId !== data?.drivers[0]?.driverId)
+      setDriverId(data?.drivers[0]?.driverId)
       setDriverLatitude(data?.drivers[0]?.latitude)
       setDriverLongitude(data?.drivers[0]?.longitude)
       setDrivers(deleteDriver)
@@ -143,12 +158,23 @@ export function RideProvider({ children }: { children: ReactNode }) {
       console.error('requestMatch error', e)
       message("error in match",``)
     }
-    
   }
 
   useEffect(() => {
     requestMatch()
   },[userId,role])
+
+  useEffect(() => {
+    if (role === 'client' && userId) {
+      handleDriverLocation();
+      const intervalId = setInterval(() => {
+        handleDriverLocation();
+      }, 5000);
+      return () => clearInterval(intervalId);
+    } else {
+      setIsInRide(false);
+    }
+  }, [driverId]);
   
 
   const contextValue: RideContextValue = {
