@@ -9,6 +9,7 @@ import { useRideStore } from "@/store/ride.store";
 export default function IDInput() {
   const { role, setUserId} = useRide();
   const { longitude, setLongitude, latitude, setLatitude } = useRideStore()
+  const { updateLocation } = useRide()
   const [id, setId] = useState("");
   const router = useRouter()
 
@@ -20,12 +21,16 @@ export default function IDInput() {
   const test = () => {
     if (role === "driver") {
       setUserId('driver123')
+      setLatitude(37.773487)
+      setLongitude(-122.418687)
+      updateLocation('driver123',37.773487, -122.418687)
     }
     if( role === "client") {
       setUserId('client123')
+      setLatitude(37.769183)
+      setLongitude(-122.407994)
     }
-    setLatitude(37.7723)
-    setLongitude(-122.4182)
+
     router.push("/match");
   }
 
@@ -41,8 +46,8 @@ export default function IDInput() {
       {role === "client" && (      
         <p>
           test : client123 <br/>
-          latitude: 37.7723 <br/>
-          longitude: -122.4182 <br/>
+          latitude: 37.769183 <br/>
+          longitude: -122.407994 <br/>
         </p>
         )
       }
@@ -50,8 +55,8 @@ export default function IDInput() {
       {role === "driver" && (      
         <p>
           test: driver123 <br/>
-          latitude: 37.773 <br/>
-          longitude: -122.4182 <br/>
+          latitude: 37.773487 <br/>
+          longitude: 122.418687 <br/>
         </p>
         )
       }

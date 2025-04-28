@@ -22,6 +22,7 @@ export default function MapPage() {
     acceptRide,
     declineRide,
     matchService,
+    testDriver
   } = useRide();
 
   return (
@@ -56,6 +57,13 @@ export default function MapPage() {
             Match Ride
           </Button>
         )}
+
+        {role === "driver" && (
+          <Button onClick={testDriver} className="w-full">
+            test drive
+          </Button>
+        )}
+
 
         {role === "client" && events.length > 0 && (
           <div className="space-y-2">

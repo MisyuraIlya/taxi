@@ -15,6 +15,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button';
+import { status } from '@grpc/grpc-js';
 
 interface RideContextValue {
   role: 'driver' | 'client' | null
@@ -30,6 +31,8 @@ interface RideContextValue {
   declineRide: () => void
   requestMatch: () => void
   matchService: () => void
+  updateLocation: (userId: string, latitude: string | number , longitude: string | number) => void
+  testDriver: () => void
 }
 
 const RideContext = createContext<RideContextValue | undefined>(undefined)
@@ -107,7 +110,7 @@ export function RideProvider({ children }: { children: ReactNode }) {
       )
       if (!res.ok) throw new Error(await res.text())
       const data = await res.json()
-    console.log('driver location',data)
+      console.log('driver location',data)
       setIsInRide(true)
       setDriverLatitude(+data.latitude)
       setDriverLongitude(+data.longitude)
@@ -142,7 +145,7 @@ export function RideProvider({ children }: { children: ReactNode }) {
         `/api/matchService`
       ,{
         method:'POST',
-        body:JSON.stringify({longitude, latitude, radius:1000, limit:10})
+        body:JSON.stringify({longitude, latitude, radius:100000, limit:10})
       })
       if (!res.ok) {
         message("driver on the way","no drivers found around")
@@ -159,6 +162,70 @@ export function RideProvider({ children }: { children: ReactNode }) {
       message("error in match",``)
     }
   }
+
+  const updateLocation = async (userId: string,latitude: string | number , longitude: string | number) => {
+    console.log('updateLocation start')
+    let obj = {
+      latitude: latitude,
+      longitude: longitude,
+      driverId: userId,
+      status: 'active'
+    }
+
+    try {
+      const res = await fetch(
+        `/api/driver/${userId}`, {
+          method: 'PUT',
+          body: JSON.stringify(obj)
+        }
+      )
+      if (!res.ok) throw new Error(await res.text())
+      const data = await res.json()
+      console.log('updateLocation',data)
+    } catch (e) {
+      console.error('requestMatch error', e)
+    }
+  }
+
+  const testDriver = async () => {
+    // 1. Configuration
+    const driverId       = 'driver123'
+    const driverStart    = { latitude:  37.773487, longitude: -122.418687 }
+    const clientLoc      = { latitude:  37.769183, longitude: -122.407994 }
+    const numRoutePoints = 20      
+    const intervalMs     = 5000    
+  
+    // 2. Build an array of intermediate coords
+    function generateRoute(
+      start: { latitude: number, longitude: number },
+      end:   { latitude: number, longitude: number },
+      steps: number
+    ) {
+      const route = []
+      const latStep = (end.latitude  - start.latitude)  / steps
+      const lngStep = (end.longitude - start.longitude) / steps
+  
+      for (let i = 0; i <= steps; i++) {
+        route.push({
+          latitude:  +(start.latitude  + latStep * i).toFixed(6),
+          longitude: +(start.longitude + lngStep  * i).toFixed(6),
+        })
+      }
+  
+      return route
+    }
+  
+    // 3. Start the “movement” loop
+    const mockRoute = generateRoute(driverStart, clientLoc, numRoutePoints)
+    let idx = 0
+  
+    setInterval(() => {
+      const { latitude, longitude } = mockRoute[idx]
+      updateLocation(driverId, latitude, longitude)
+      idx = (idx + 1) % mockRoute.length
+    }, intervalMs)
+  }
+
 
   useEffect(() => {
     requestMatch()
@@ -190,7 +257,9 @@ export function RideProvider({ children }: { children: ReactNode }) {
     acceptRide,
     declineRide,
     requestMatch,
-    matchService
+    matchService,
+    updateLocation,
+    testDriver
   }
 
   return (

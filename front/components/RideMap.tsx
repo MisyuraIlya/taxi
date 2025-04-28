@@ -17,7 +17,7 @@ export default function RideMap({
   selectedRideId,
   onPolylineClick,
 }: RideMapProps) {
-  const { drivers, latitude, longitude, driverLatitude, driverLongitude} = useRideStore();
+  const { drivers, latitude, longitude, driverLatitude, driverLongitude, role} = useRideStore();
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GMAPS_KEY!,
   });
@@ -73,7 +73,7 @@ export default function RideMap({
       <Marker
         position={{ lat: latitude!, lng: longitude! }}
         icon={{
-          url: "http://maps.google.com/mapfiles/kml/shapes/man.png",
+          url: role === 'driver' ? "http://maps.google.com/mapfiles/kml/shapes/cabs.png" : "http://maps.google.com/mapfiles/kml/shapes/man.png",
           scaledSize: new window.google.maps.Size(32, 32),
           anchor: new window.google.maps.Point(16, 32),
         }}
@@ -83,7 +83,7 @@ export default function RideMap({
         <Marker
           position={{ lat: driverLatitude, lng: driverLongitude }}
           icon={{
-            url: "http://maps.google.com/mapfiles/kml/shapes/cabs.png",
+            url: role === 'client' ? "http://maps.google.com/mapfiles/kml/shapes/cabs.png" : "http://maps.google.com/mapfiles/kml/shapes/man.png",
             scaledSize: new window.google.maps.Size(32, 32),
             anchor: new window.google.maps.Point(16, 16),
           }}
